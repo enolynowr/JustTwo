@@ -1,9 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">JustTwo</string>
+    <string name="app_name">You And Me</string>
+    <string name="action_settings">Settings</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+
+<!--    &lt;!&ndash; 권한 화면 &ndash;&gt;
+    <string name="permission_checking">権限...</string>
+    <string name="permission_setting_title">권한 설정</string>
+    <string name="permission_setting_message">앱을 실행하기 위해서는 권한 설정을 해야 합니다!</string>
+    <string name="permission_setting_restart">권한을 설정하고 다시 실행해주세요!</string>-->
+
+
+
+    <!-- 共通 -->
+    <string name="skip_string">...</string>
+    <string name="close">閉じる</string>
+    <string name="cancel">取消</string>
+    <string name="setting">設定</string>
+    <string name="prev">前</string>
+    <string name="next">次</string>
+    <string name="complete">完了</string>
+    <string name="save">保存</string>
+    <string name="submit">転送</string>
+    <string name="open_date">開設日</string>
+    <string name="open_time">開始時</string>
+    <string name="click_me">날래 누르라우!!</string>
+
+    <string name="network_not_working">네크워크에 연결되어 있지 않습니다.\n확인후 다시 실행해주세요.</string>
+
+    <!-- 会員 -->
+    <string name="nav_drawer_signup">会員 登録</string>
+
+    <string name="nav_drawer_login">ログイン</string>
+    <string name="sign_up_email">メール</string>
+    <string name="profile_pw">パスワード</string>
+    <string name="sign_up_sex">性別</string>
+    <string name="sign_up_age">歳</string>
+    <string name="sex_man">男性</string>
+    <string name="sex_woman">女性</string>
+    <string name="sex_none">未選択</string>
+    <string name="age_under">未成年</string>
+    <string name="age_adult">成年</string>
+    <string name="name_need">名前を設定してください。</string>
+    <string name="change_save">変更内容を保存しますか？</string>
+    <string name="no_change">변경된 사항이 없습니다</string>
+    <string name="no_data">데이터가 없습니다</string>
+    <string name="check_input_email">e-mailをもう一度確認してください。</string>
+    <string name="sign_up_insert_fail_msg">会員登録時、サーバと接続失敗</string>
+
+    <!-- 部屋  -->
+    <string name="register_bang">部屋 登録</string>
+    <string name="input_bang_adr">住所を入力してください。</string>
+    <string name="input_bang_date">日付を入力してください。</string>
+    <string name="input_bestfood_description">説明を入力してください。(目的、活動時間、持ち物 等)</string>
+    <string name="category">カテゴリー</string>
+    <string name="date">日付</string>
+    <string name="time">時間</string>
+    <string name="place">場所</string>
+    <string name="description">詳細説明</string>
+    <string name="map">지도</string>
+    <string name="location">위치보기</string>
+    <string name="no_text">無</string>
+    <string name="loading">少々お待ちください。</string>
+    <string name="loading_not">잠시후에 다시 시도해주세요</string>
+    <string name="checking">承認中</string>
+    <string name="confirmed">承認済</string>
+    <string name="disapprove">不許可</string>
+    <string name="host_place">住所</string>
+    <string name="is_open_bang">申請</string>
+    <string name="is_closed_bang">満員</string>
+
+
+
+    <!-- Manage -->
+    <string name="manage_toolbar_title">管理</string>
+
+
+    <!-- 並べ替え -->
+    <string name="order_meter">距離</string>
+    <string name="order_recent">最近</string>
+
 </resources>

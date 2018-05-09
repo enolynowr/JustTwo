@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="camera_album_category">
+        <item>카메라</item>
+        <item>앨범</item>
+    </string-array>
+
+    <string-array name="bang_category">
+        <item>選択してください。</item>
+        <item>食べ物</item>
+        <item>外国語</item>
+        <item>ショッピング</item>
+        <item>旅行</item>
+        <item>ゲーム</item>
+        <item>スポーツ</item>
+        <item>散歩</item>
+        <item>その他</item>
+    </string-array>
+
+    <string-array name="main_list_order">
+        <item>並べ替え</item>
+        <item>間近い順</item>
+        <item>距離順</item>
+    </string-array>
+
+</resources>
