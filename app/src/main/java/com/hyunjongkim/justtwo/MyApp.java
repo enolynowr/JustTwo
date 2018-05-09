@@ -3,8 +3,8 @@ package com.hyunjongkim.justtwo;
 import android.app.Application;
 import android.os.StrictMode;
 
-import com.hyunjongkim.justtwo.item.BangInfoItem;
-import com.hyunjongkim.justtwo.item.UserInfoItem;
+import com.hyunjongkim.justtwo.a_item.BangInfoItem;
+import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 
 
 /**
@@ -31,11 +31,17 @@ public class MyApp extends Application {
     }
 
     public void setUserInfoItem(UserInfoItem item) {
+
         this.userInfoItem = item;
     }
 
-    public int getMemberSeq() {
-        return userInfoItem.seq;
+    public int getUserSeq() {
+
+        return userInfoItem.seq ;
+    }
+
+    public String getUserId(){
+        return userInfoItem.uId;
     }
 
     public void setBangInfoItem(BangInfoItem bangInfoItem) {

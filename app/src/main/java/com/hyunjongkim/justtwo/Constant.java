@@ -8,5 +8,6 @@ public interface Constant {
 
     String ORDER_TYPE_METER = "";
     String ORDER_TYPE_FAVORITE = "keep_cnt";
-    String ORDER_TYPE_RECENT = "reg_date";
+    String ORDER_TYPE_RECENT = "host_date";
+
 }
