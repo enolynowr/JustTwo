@@ -1,26 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="camera_album_category">
-        <item>카메라</item>
-        <item>앨범</item>
-    </string-array>
 
     <string-array name="bang_category">
         <item>選択してください。</item>
-        <item>食べ物</item>
-        <item>外国語</item>
-        <item>ショッピング</item>
+        <item>食事</item>
+        <item>買い物</item>
+        <item>カラオケ</item>
+        <item>勉強</item>
+        <item>スポーツ</item>
+        <item>文化活動</item>
         <item>旅行</item>
         <item>ゲーム</item>
-        <item>スポーツ</item>
         <item>散歩</item>
+        <item>ペット散歩</item>
+        <item>ピックニック</item>
+        <item>外国語</item>
         <item>その他</item>
     </string-array>
 
+    <!--MAIN LIST -->
     <string-array name="main_list_order">
         <item>並べ替え</item>
         <item>間近い順</item>
         <item>距離順</item>
     </string-array>
+
+    <string-array name="filter_gender">
+        <item>未選択</item>
+        <item>男性</item>
+        <item>女性</item>
+    </string-array>
+
+    <!--REGISTER USER -->
+    <string-array name="age_array">
+        <item>未選択</item>
+        <item>10代</item>
+        <item>20代</item>
+        <item>30代</item>
+        <item>40代</item>
+        <item>50代</item>
+        <item>60代</item>
+        <item>70代以上</item>
+    </string-array>
+
+    <integer-array name="age_int_array">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+        <item>70</item>
+        <item>0</item>
+    </integer-array>
+
+
 
 </resources>

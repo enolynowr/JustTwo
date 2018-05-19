@@ -2,189 +2,228 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_1"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
     android:orientation="vertical">
-
     <include
         android:id="@+id/toolbar_layout"
         layout="@layout/a_toolbar" />
 
-    <ScrollView
-        android:id="@+id/scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_layout"
-        android:fillViewport="true"
-        android:scrollbars="none">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@+id/toolbar_layout">
 
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_medium"
+        android:background="@color/white_1"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <!--  CATEGORY -->
         <LinearLayout
-            android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_small"
-            android:background="@color/bg_default"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/text_size_medium">
+            android:orientation="horizontal">
 
-            <!-- CATEGORY -->
-            <LinearLayout
+            <TextView
+                android:id="@+id/register_category_display"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/spacing_small"
+                android:layout_weight="2"
+                android:text="@string/category"
+                android:textColor="@color/text_color_black" />
+
+            <TextView
+                android:id="@+id/bang_info_category"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="@dimen/spacing_small"
+                android:layout_weight="1"
                 android:background="@drawable/bg_round"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_medium">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="@string/category"
-                    android:textColor="@color/accentColor"
-                    android:textSize="@dimen/text_size_medium"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/bang_info_category"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_medium"
-                    android:gravity="start"
-                    android:text=""
-                    android:textColor="@color/text_color_black"
-                    android:textSize="@dimen/text_size_small2" />
-            </LinearLayout>
-
-            <!-- DATE -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"
-
-                android:background="@drawable/bg_round"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_medium">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="@string/date"
-                    android:textColor="@color/accentColor"
-                    android:textSize="@dimen/text_size_medium"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/bang_info_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_medium"
-                    android:gravity="start"
-                    android:text=""
-                    android:textColor="@color/text_color_black"
-                    android:textSize="@dimen/text_size_small2" />
-            </LinearLayout>
-
-            <!-- TIME -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"
-
-                android:background="@drawable/bg_round"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_medium">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="@string/time"
-                    android:textColor="@color/accentColor"
-                    android:textSize="@dimen/text_size_medium"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/bang_info_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_medium"
-                    android:gravity="start"
-                    android:text=""
-                    android:textColor="@color/text_color_black"
-                    android:textSize="@dimen/text_size_small2" />
-            </LinearLayout>
-
-            <!-- PLACE -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"
-
-                android:background="@drawable/bg_round"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_medium">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="@string/place"
-                    android:textColor="@color/accentColor"
-                    android:textSize="@dimen/text_size_medium"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/bang_info_place"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_medium"
-                    android:gravity="start"
-                    android:text=""
-                    android:textColor="@color/text_color_black"
-                    android:textSize="@dimen/text_size_small2" />
-            </LinearLayout>
-
-            <!-- DESCRIPTION -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:background="@drawable/bg_round"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_medium">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="@string/description"
-                    android:textColor="@color/accentColor"
-                    android:textSize="@dimen/text_size_medium"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/bang_info_contents"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_medium"
-                    android:gravity="start"
-                    android:text=""
-                    android:textColor="@color/text_color_black"
-                    android:textSize="@dimen/text_size_small2" />
-            </LinearLayout>
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="参加" />
-
+                android:gravity="center_vertical|right"
+                android:nextFocusDown="@+id/register_bang_date" />
         </LinearLayout>
 
-    </ScrollView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="10dp"
+            android:background="@color/white_1_1" />
 
-   <include android:id="@+id/a_loading_layout"
-        layout="@layout/a_loading_layout" />
+        <!--DATE-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/register_date_display"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/spacing_small"
+                android:layout_weight="2"
+                android:text="@string/open_date"
+                android:textColor="@color/text_color_black" />
+
+            <TextView
+                android:id="@+id/bang_info_date"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="@dimen/spacing_small"
+                android:layout_weight="1"
+                android:background="@drawable/bg_round"
+                android:gravity="center_vertical|right"
+                android:hint="@string/click_me"
+                android:textColor="@color/primaryColorDark" />
+        </LinearLayout>
+
+        <!-- TIME -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/register_time_display"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/spacing_small"
+                android:layout_weight="2"
+                android:text="@string/open_time"
+                android:textColor="@color/text_color_black" />
+
+            <TextView
+                android:id="@+id/bang_info_time"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="@dimen/spacing_small"
+                android:layout_weight="1"
+                android:background="@drawable/bg_round"
+                android:gravity="center_vertical|right"
+                android:hint="@string/click_me"
+                android:textColor="@color/primaryColorDark" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="10dp"
+            android:background="@color/white_1_1" />
+        <!-- ADR-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/register_place_display"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/spacing_small"
+                android:layout_weight="2"
+                android:text="@string/host_place"
+                android:textColor="@color/text_color_black" />
+
+            <EditText
+                android:id="@+id/bang_info_place"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="@dimen/spacing_small"
+                android:layout_weight="1"
+                android:background="@drawable/bg_round"
+                android:gravity="center_vertical"
+                android:hint="@string/input_bang_adr"
+                android:inputType="text"
+                android:textAlignment="center" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="10dp"
+            android:background="@color/white_1_1" />
+        <!-- DESCRIPTION -->
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/ti_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/child_margin_top"
+            android:background="@drawable/bg_round">
+
+            <EditText
+                android:id="@+id/bang_info_contents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_small"
+                android:fadeScrollbars="false"
+                android:gravity="start"
+                android:hint="@string/input_bestfood_description"
+                android:lines="9"
+                android:maxLength="500"
+                android:overScrollMode="always"
+                android:padding="@dimen/spacing_large"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
+                android:textSize="@dimen/text_size_small2" />
+        </android.support.design.widget.TextInputLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+
+    <TextView
+        android:id="@+id/applied_cnt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:text="申込数"/>
+
+    <TextView
+        android:id="@+id/show_applied_cnt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:text="10p"/>
+
+</LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>
+
 </RelativeLayout>
+
+
+    <!--  <include
+          android:id="@+id/toolbar_layout"
+          layout="@layout/a_toolbar" />
+
+
+
+              <TextView
+                  android:id="@+id/applied_cnt"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="申込数"/>
+
+              <TextView
+                  android:id="@+id/show_applied_cnt"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="10p"/>
+
+          </LinearLayout>
+
+      </ScrollView>
+
+     &lt;!&ndash;<include android:id="@+id/a_loading_layout"
+          layout="@layout/a_loading_layout" />&ndash;&gt;
+  -->

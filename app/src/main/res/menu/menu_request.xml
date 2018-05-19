@@ -2,8 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_close"
-        android:title="@string/save"
-        app:showAsAction="always|withText"
-        />
+        android:id="@+id/action_req"
+        android:title="@string/req"
+        app:showAsAction="always|withText" />
 </menu>

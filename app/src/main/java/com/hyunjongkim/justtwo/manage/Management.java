@@ -17,7 +17,6 @@ public class Management extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,11 +32,10 @@ public class Management extends AppCompatActivity {
         tabLayout.setSelectedTabIndicatorHeight((int) (2 * getResources().getDisplayMetrics().density));
         tabLayout.setTabTextColors(Color.parseColor("#000000"), Color.parseColor("#FF4500"));
 
-        tabLayout.addTab(tabLayout.newTab().setText("部屋管理"));
-        tabLayout.addTab(tabLayout.newTab().setText("個人管理"));
+        tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.tab_manage_applied_room)));
+        tabLayout.addTab(tabLayout.newTab().setText(getResources().getString(R.string.tab_manage_made_room)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-// Initializing ViewPager
         viewPager = findViewById(R.id.pager);
 
 // Creating TabPagerAdapter adapter
@@ -65,21 +63,7 @@ public class Management extends AppCompatActivity {
 
     }
 
-// Toolbarの設定
-    private void setToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.manage_toolbar_title);
-        }
-    }
-
-
-// Back to main
+    // Back to main
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -92,5 +76,18 @@ public class Management extends AppCompatActivity {
         }
 
         return true;
+    }
+
+// Toolbarの設定
+    private void setToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(R.string.nav_manage_room);
+        }
     }
 }

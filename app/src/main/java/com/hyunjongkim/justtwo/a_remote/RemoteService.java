@@ -1,6 +1,6 @@
 package com.hyunjongkim.justtwo.a_remote;
 
-import com.hyunjongkim.justtwo.a_item.BangInfoItem;
+import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 
 import java.util.ArrayList;
@@ -12,40 +12,41 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-/**
- * 서버에 호출할 메소드를 선언하는 인터페이스
- */
+// Interface for Calling Server
 public interface RemoteService {
-    //Aws
-    //String BASE_URL = "http://54.92.71.204:3000";
-    //Test 10.4.78.27 192.168.11.4   192.168.43.160
-    String BASE_URL = "http://192.168.11.4:3000";
+    String awsUrl = "http://54.92.71.204:3000";
+    String homeUrl = "http://192.168.11.4:3000";
+    String starbarUrl = "http://10.4.164.210:3000";
+    String BASE_URL = awsUrl;
 
+/// USER
 
-// GET
-    // 방 정보
-    @GET("/bang/info/{info_seq}")
-    Call<BangInfoItem> selectBangInfo(@Path("info_seq") int bangInfoSeq,
-                                      @Query("user_seq") int userSeq);
-    @GET("/manage/list/bang")
-    Call<ArrayList<BangInfoItem>> listManageInfoRoom(@Query("order_type") String orderType,
-                                                     @Query("current_page") int currentPage);
+    // Select Info of User
+    @POST("/users/{email}/{pw}")
+    Call<UserInfoItem> selectUserInfo(@Path("email") String email, @Path("pw") String pw);
 
-    @GET("/bang/list/main")
-    Call<ArrayList<BangInfoItem>> listMain(@Query("order_type") String orderType,
-                                           @Query("current_page") int currentPage);
-
-
-
-// POST
+    // POST
     // Register User
-    @POST("/users/info")
+    @POST("/users/regUserInfo")
     Call<String> insertUserInfo(@Body UserInfoItem userInfoItem);
 
 
+/// ROOM
+
+    // Info of bang
+    @GET("/bang/info/{info_seq}")
+    Call<RoomInfoItem> selectBangInfo(@Path("info_seq") int bangInfoSeq,
+                                      @Query("user_seq") String _userEmail);
+    // List for manage
+    @GET("/manage/list/bang")
+    Call<ArrayList<RoomInfoItem>> listManageInfoRoom(@Query("order_type") String orderType,
+                                                     @Query("current_page") int currentPage);
+    // List for main
+    @GET("/bang/list/main")
+    Call<ArrayList<RoomInfoItem>> listMain(@Query("order_type") String orderType,
+                                           @Query("current_page") int currentPage);
+
+    // Insert info of bang
     @POST("/bang/info")
-    Call<String> insertBangInfo(@Body BangInfoItem infoItem);
-
-
-
+    Call<String> insertBangInfo(@Body RoomInfoItem infoItem);
 }

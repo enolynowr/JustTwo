@@ -8,11 +8,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.hyunjongkim.justtwo.Constant;
@@ -20,79 +18,55 @@ import com.hyunjongkim.justtwo.Constant;
 import com.hyunjongkim.justtwo.MyApp;
 
 import com.hyunjongkim.justtwo.R;
-import com.hyunjongkim.justtwo.a_adapter.ManagementInfoListAdapter;
+import com.hyunjongkim.justtwo.a_adapter.ManageAppliedRoomListAdapter;
 import com.hyunjongkim.justtwo.a_custom.EndlessRecyclerViewScrollListener;
-import com.hyunjongkim.justtwo.a_item.BangInfoItem;
-import com.hyunjongkim.justtwo.a_lib.MyLog;
-import com.hyunjongkim.justtwo.a_remote.RemoteService;
-import com.hyunjongkim.justtwo.a_remote.ServiceGenerator;
+import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 
 import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ManageBang extends Fragment implements View.OnClickListener {
+public class ManageAppliedRoom extends Fragment implements View.OnClickListener {
 
     private final String TAG = this.getClass().getSimpleName();
 
-    ManagementInfoListAdapter infoListAdapter;
+    ManageAppliedRoomListAdapter infoListAdapter;
     EndlessRecyclerViewScrollListener scrollListener;
-    Context context;
-    RecyclerView managementRoomList;
-    StaggeredGridLayoutManager layoutManager;
+
+    RecyclerView rcManageAppliedRoom;
     LinearLayoutManager linearLayoutManager;
-    Button btnRoomStatus;
+    Context context;
 
-    TextView mngRoomCategory;
-    TextView mngRoomDate;
     TextView noDataText;
-    int userSeq;
-    int listTypeValue = 2;
-
-    String bangCategory;
-    String hostDate;
-    String hostPlace;
-    String hostContent;
+    String userEmail;
     String orderType;
-    String bangStatus;
 
-
-    public static ManageBang newInstance() {
-        // Required empty public constructor
-        ManageBang mr = new ManageBang();
-
+    public static ManageAppliedRoom newInstance() {
+        ManageAppliedRoom mr = new ManageAppliedRoom();
         return mr;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         context = this.getActivity();
-
-        userSeq = ((MyApp)this.getActivity().getApplication()).getUserSeq();
+        userEmail = ((MyApp) this.getActivity().getApplication()).getUserEmail();
 
         View layout = inflater.inflate(R.layout.manage_room, container, false);
 
         return layout;
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
-
         MyApp myApp = ((MyApp) getActivity().getApplication());
-        BangInfoItem currentBangInfoItem = myApp.getBangInfoItem();
+        RoomInfoItem currentRoomInfoItem = myApp.getRoomInfoItem();
 
-        if (infoListAdapter != null && currentBangInfoItem != null) {
-            infoListAdapter.setItem(currentBangInfoItem);
-            myApp.setBangInfoItem(null);
+        if (infoListAdapter != null && currentRoomInfoItem != null) {
+            infoListAdapter.setItem(currentRoomInfoItem);
+            myApp.setRoomInfoItem(null);
         }
     }
 
@@ -102,32 +76,33 @@ public class ManageBang extends Fragment implements View.OnClickListener {
         //((MainActivity) getActivity()).getSupportActionBar().setTitle(R.string.management);
 
         orderType = Constant.ORDER_TYPE_METER;
-        managementRoomList = view.findViewById(R.id.rc_manage_room);
+        rcManageAppliedRoom = view.findViewById(R.id.rc_manage_room);
         noDataText = view.findViewById(R.id.no_data);
+
         setRecyclerView();
 
-        listInfo( orderType, 0);
-
+        listInfo(orderType, 0);
     }
+
+    @Override
+    public void onClick(View v) {
+        setRecyclerView();
+        listInfo(orderType, 0);
+    }
+
+///////////////////// FUNCTION
 
     private void setLayoutManager() {
         linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-
-        //layoutManager = new StaggeredGridLayoutManager(row, LinearLayoutManager.VERTICAL);
-        //layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
-        managementRoomList.setLayoutManager(linearLayoutManager);
+        rcManageAppliedRoom.setLayoutManager(linearLayoutManager);
     }
 
     private void setRecyclerView() {
 
         setLayoutManager();
 
-        infoListAdapter = new ManagementInfoListAdapter(context,
-                R.layout.row_manage_room,
-                new ArrayList<BangInfoItem>());
-
-        managementRoomList.setAdapter(infoListAdapter);
-
+        infoListAdapter = new ManageAppliedRoomListAdapter(context, R.layout.row_manage_room, new ArrayList<RoomInfoItem>());
+        rcManageAppliedRoom.setAdapter(infoListAdapter);
 
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
@@ -136,27 +111,21 @@ public class ManageBang extends Fragment implements View.OnClickListener {
             }
         };
 
-        managementRoomList.addOnScrollListener(scrollListener);
-
+        rcManageAppliedRoom.addOnScrollListener(scrollListener);
     }
 
-    /*
-     *
-     *
-     * */
-
+    //
     private void listInfo(String orderType, final int currentPage) {
 
-        RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
+        /*RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
+        Call<ArrayList<RoomInfoItem>> call = remoteService.listManageInfoRoom(orderType, currentPage);
 
-        Call<ArrayList<BangInfoItem>> call = remoteService.listManageInfoRoom( orderType, currentPage);
-
-        call.enqueue(new Callback<ArrayList<BangInfoItem>>() {
+        call.enqueue(new Callback<ArrayList<RoomInfoItem>>() {
             @Override
-            public void onResponse(Call<ArrayList<BangInfoItem>> call, Response<ArrayList<BangInfoItem>> response) {
+            public void onResponse(Call<ArrayList<RoomInfoItem>> call, Response<ArrayList<RoomInfoItem>> response) {
 
-                ArrayList<BangInfoItem> list = response.body();
-                      MyLog.d(TAG, list.toString());
+                ArrayList<RoomInfoItem> list = response.body();
+                MyLog.d(TAG, list.toString());
 
                 if (response.isSuccessful() && list != null) {
                     infoListAdapter.addItemList(list);
@@ -170,18 +139,18 @@ public class ManageBang extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onFailure(Call<ArrayList<BangInfoItem>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<RoomInfoItem>> call, Throwable t) {
                 MyLog.d(TAG, "No internet!!");
             }
-        });
-    }
+        });*/
+        ArrayList<RoomInfoItem> listRoomInfoItem = new ArrayList<>();
+        RoomInfoItem roomInfoItem = new RoomInfoItem();
 
+        roomInfoItem.category = "Lang";
+        roomInfoItem.dateTime = "2018-05-15";
 
-    @Override
-    public void onClick(View v) {
-
-        setRecyclerView();
-        listInfo(orderType, 0);
+        listRoomInfoItem.add(roomInfoItem);
+        infoListAdapter.addItemList(listRoomInfoItem);
 
     }
 }

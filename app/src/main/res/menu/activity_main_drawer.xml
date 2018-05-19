@@ -5,26 +5,22 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_signup"
+            android:id="@+id/nav_home"
             android:icon="@drawable/ic_profile"
-            android:title="@string/nav_drawer_signup" />
+            android:title="@string/nav_home" />
         <item
-            android:id="@+id/nav_bang_register"
+            android:id="@+id/nav_manage_room"
             android:icon="@drawable/living_room"
-            android:title="@string/register_bang" />
+            android:title="@string/nav_manage_room" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/manage"
-            android:title="@string/manage_toolbar_title" />
+            android:title="@string/nav_manage_user" />
+        <item
+            android:id="@+id/nav_option"
+            android:icon="@drawable/manage"
+            android:title="@string/option" />
     </group>
 
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-        </menu>
-    </item>
 
 </menu>

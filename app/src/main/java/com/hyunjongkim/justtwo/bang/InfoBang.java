@@ -1,26 +1,31 @@
 package com.hyunjongkim.justtwo.bang;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
 import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
-import com.hyunjongkim.justtwo.a_custom.WorkaroundMapFragment;
-import com.hyunjongkim.justtwo.a_item.BangInfoItem;
+import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
+import com.hyunjongkim.justtwo.a_lib.GoLib;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
 import com.hyunjongkim.justtwo.a_lib.StringLib;
 import com.hyunjongkim.justtwo.a_remote.RemoteService;
@@ -32,21 +37,22 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * 맛집 정보를 보는 액티비티이다.
+ * LAYOUT FOR INFO OF ROOM
  */
-public class InfoBang extends AppCompatActivity implements View.OnClickListener {
+public class InfoBang extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     private final String TAG = this.getClass().getSimpleName();
     public static final String INFO_SEQ = "INFO_SEQ";
-
+    DrawerLayout drawer;
     Context context;
-    BangInfoItem item;
-    GoogleMap map;
-    View loadingText;
-    ScrollView scrollView;
-
-    int userSeq;
+    RoomInfoItem item;
+    String userEmail;
     int bangInfoSeq;
+
+    // VIEW
+    View loadingText;
+    View headerLayout;
+    ScrollView scrollView;
 
     //
     @Override
@@ -55,27 +61,15 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener 
         setContentView(R.layout.bang_info);
 
         context = this;
+        drawer = findViewById(R.id.drawer_layout);
+//        loadingText = findViewById(R.id.a_loading_layout);
 
-        loadingText = findViewById(R.id.a_loading_layout);
-
-        userSeq = ((MyApp) getApplication()).getUserSeq();
+        userEmail = ((MyApp) getApplication()).getUserEmail();
         bangInfoSeq = getIntent().getIntExtra(INFO_SEQ, 1);
-        selectBangInfo(bangInfoSeq, userSeq);
+        //selectBangInfo(bangInfoSeq, userEmail);
 
         setToolbar();
-    }
-
-    // Setting Tool bar
-    private void setToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("");
-        }
+        //setView();
     }
 
     /**
@@ -84,7 +78,7 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener 
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_close, menu);
+        getMenuInflater().inflate(R.menu.menu_request, menu);
         return true;
     }
 
@@ -99,78 +93,12 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener 
             case android.R.id.home:
                 finish();
                 break;
-            case R.id.action_close:
-                finish();
+            case R.id.action_req:
+                showDialog();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    // Check the info of room :: @param memberSeq 사용자 시퀀스
-    private void selectBangInfo(int bangInfoSeq, int userSeq) {
-        RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
-        Call<BangInfoItem> call = remoteService.selectBangInfo(bangInfoSeq, userSeq);
-
-        call.enqueue(new Callback<BangInfoItem>() {
-            @Override
-            public void onResponse(Call<BangInfoItem> call, Response<BangInfoItem> response) {
-                BangInfoItem infoItem = response.body();
-
-                if (response.isSuccessful() && infoItem != null && infoItem.seq > 0) {
-                    item = infoItem;
-                    setView();
-                    loadingText.setVisibility(View.GONE);
-                } else {
-                    loadingText.setVisibility(View.VISIBLE);
-                    ((TextView) findViewById(R.id.loading_text)).setText(R.string.loading_not);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BangInfoItem> call, Throwable t) {
-                MyLog.d(TAG, "no internet connectivity");
-                MyLog.d(TAG, t.toString());
-            }
-        });
-    }
-
-    //서버에서 조회한 맛집 정보를 화면에 설정한다.
-    private void setView() {
-        getSupportActionBar().setTitle(item.category);
-
-        TextView categoryText = findViewById(R.id.bang_info_category);
-        if (!StringLib.getInstance().isBlank(item.category)) {
-            categoryText.setText(item.category);
-        }
-
-        TextView hostDate = findViewById(R.id.bang_info_date);
-        if (!StringLib.getInstance().isBlank(item.hostDate)) {
-            hostDate.setText(item.hostDate);
-        } else {
-            hostDate.setVisibility(View.GONE);
-        }
-
-        TextView hostTime = findViewById(R.id.bang_info_time);
-        if (!StringLib.getInstance().isBlank(item.hostTime)) {
-            hostTime.setText(item.hostTime);
-        } else {
-            hostTime.setVisibility(View.GONE);
-        }
-
-        TextView hostPlace = findViewById(R.id.bang_info_place);
-        if (!StringLib.getInstance().isBlank(item.hostPlace)) {
-            hostPlace.setText(item.hostPlace);
-        } else {
-            hostPlace.setVisibility(View.GONE);
-        }
-
-        TextView description = findViewById(R.id.bang_info_contents);
-        if (!StringLib.getInstance().isBlank(item.bangContents)) {
-            description.setText(item.bangContents);
-        } else {
-            description.setText(R.string.no_text);
-        }
     }
 
     //
@@ -180,6 +108,7 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener 
             movePosition(new LatLng(item.latitude, item.longitude),
                     Constant.MAP_ZOOM_LEVEL_DETAIL);
         }*/
+
     }
 
     /**
@@ -190,6 +119,162 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener 
     @Override
     protected void onPause() {
         super.onPause();
-        ((MyApp) getApplication()).setBangInfoItem(item);
+        ((MyApp) getApplication()).setRoomInfoItem(item);
     }
+
+///////////////// BELOW FUNCTION
+
+    // Setting Tool bar
+    private void setToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("部屋申込");
+
+        }
+        // need to layout inflate
+        /*DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        headerLayout = navigationView.getHeaderView(0);*/
+    }
+
+    //서버에서 조회한 맛집 정보를 화면에 설정한다.
+    private void setView() {
+        //getSupportActionBar().setTitle(item.category);
+
+        TextView categoryText = findViewById(R.id.bang_info_category);
+        TextView hostDate = findViewById(R.id.bang_info_date);
+        TextView hostTime = findViewById(R.id.bang_info_time);
+        TextView hostPlace = findViewById(R.id.bang_info_place);
+        TextView description = findViewById(R.id.bang_info_contents);
+        TextView appliedCnt = findViewById(R.id.show_applied_cnt);
+
+        categoryText.setText(item.category);
+
+/*
+        if (!StringLib.getInstance().isBlank(item.hostDate)) {
+            hostDate.setText(item.hostDate);
+        } else {
+            hostDate.setVisibility(View.GONE);
+        }
+
+        if (!StringLib.getInstance().isBlank(item.hostTime)) {
+            hostTime.setText(item.hostTime);
+        } else {
+            hostTime.setVisibility(View.GONE);
+        }
+*/
+
+        if (!StringLib.getInstance().isBlank(item.location)) {
+            hostPlace.setText(item.location);
+        } else {
+            hostPlace.setVisibility(View.GONE);
+        }
+
+        if (!StringLib.getInstance().isBlank(item.desc)) {
+            description.setText(item.desc);
+        } else {
+            description.setText(R.string.no_text);
+        }
+    }
+
+
+    // SERVER
+    // Check the info of room :: @param memberSeq 사용자 시퀀스
+    private void selectBangInfo(int bangInfoSeq, String _userEmail) {
+        RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
+        Call<RoomInfoItem> call = remoteService.selectBangInfo(bangInfoSeq, _userEmail);
+
+        call.enqueue(new Callback<RoomInfoItem>() {
+            @Override
+            public void onResponse(Call<RoomInfoItem> call, Response<RoomInfoItem> response) {
+                RoomInfoItem infoItem = response.body();
+
+                if (response.isSuccessful() && infoItem != null && infoItem.roomInx > 0) {
+                    item = infoItem;
+                    //setView();
+                    loadingText.setVisibility(View.GONE);
+                } else {
+                    // loadingText.setVisibility(View.VISIBLE);
+                    ((TextView) findViewById(R.id.loading_text)).setText(R.string.loading_not);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RoomInfoItem> call, Throwable t) {
+                MyLog.d(TAG, "no internet connectivity");
+                MyLog.d(TAG, t.toString());
+            }
+        });
+    }
+
+    private void checkValid(TextView... _textView) {
+
+        for (TextView txtV : _textView) {
+            if (!StringLib.getInstance().isBlank(item.location)) {
+                txtV.setText(item.location);
+            } else {
+                txtV.setVisibility(View.GONE);
+            }
+
+
+        }
+    }
+
+    private void showDialog() {
+        final EditText edittext = new EditText(this);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("AlertDialog Title");
+        builder.setMessage("AlertDialog Content");
+        builder.setView(edittext);
+        builder.setPositiveButton("입력",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext(), edittext.getText().toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        builder.setNegativeButton("취소",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        builder.show();
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_home) {
+            GoLib.getInstance().goHome(this);
+        } else if (id == R.id.nav_manage_room) {
+            GoLib.getInstance().goManagementActivity(this);
+        } else if (id == R.id.nav_manage) {
+            GoLib.getInstance().goManagementActivity(this);
+        } else if (id == R.id.nav_manage) {
+
+        }
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+
+        return true;
+    }
+
+
 }

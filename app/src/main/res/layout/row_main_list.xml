@@ -24,7 +24,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_medium2"
+                android:textSize="@dimen/text_size_medium"
                 android:textColor="@color/snow"
                 android:text="CATEGORY"
                 />
@@ -54,8 +54,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/snow"
-                android:textSize="@dimen/text_size_medium2"
-                android:text="開催日"
+                android:textSize="@dimen/text_size_medium"
+                android:text="日時"
                />
             <TextView
                 android:id="@+id/tv_row_main_date"
@@ -82,9 +82,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20dp"
+                android:textSize="@dimen/text_size_medium"
                 android:textColor="@color/snow"
-                android:textStyle="bold"
                 android:text="場所" />
             <TextView
                 android:id="@+id/tv_row_main_place"
@@ -101,15 +100,39 @@
             android:layout_marginBottom="@dimen/spacing_small2"
             android:background="@color/white_1_1" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_medium"
+                android:textColor="@color/snow"
+                android:text="説明" />
+            <TextView
+                android:id="@+id/tv_row_main_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="@dimen/spacing_small"
+            android:layout_marginBottom="@dimen/spacing_small2"
+            android:background="@color/white_1_1" />
+
         <!-- Bang Status Btn -->
         <Button
             android:id="@+id/btn_row_main_status"
-            android:background="@color/coral"
+            android:background="@color/primaryColor"
             android:textColor="@color/snow"
             android:textSize="@dimen/text_size_medium2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

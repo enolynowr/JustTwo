@@ -11,15 +11,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    sourceSets {
-        main {
-            res.srcDirs = [
-                    'src/main/res/layout/manage',
-                    'src/main/res'
-            ]
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -30,22 +21,32 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
 
     annotationProcessor 'org.parceler:parceler:1.1.10'
+    implementation 'org.parceler:parceler-api:1.1.10'
 
+    // LAYOUT
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:customtabs:27.1.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
-
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'de.hdodenhof:circleimageview:2.1.0'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+
+
+    // SERVER
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-    implementation 'org.parceler:parceler-api:1.1.10'
     implementation 'com.google.code.gson:gson:2.8.2'
-    implementation 'de.hdodenhof:circleimageview:2.1.0'
+
+    //SOCIAL LOGIN
+    implementation 'com.twitter.sdk.android:twitter:3.1.0'
 
     implementation 'com.google.android.gms:play-services-base:15.0.0'
     implementation 'com.google.android.gms:play-services-maps:15.0.0'

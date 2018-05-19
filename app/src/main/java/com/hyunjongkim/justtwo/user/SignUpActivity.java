@@ -7,21 +7,17 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
+import com.hyunjongkim.justtwo.a_lib.GoLib;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
 import com.hyunjongkim.justtwo.a_lib.MyToast;
 import com.hyunjongkim.justtwo.a_remote.RemoteService;
@@ -43,7 +39,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     Context context;
     UserInfoItem currentItem;
-    EditText idEdt;
+
+    int selectedUserSex;
+    int selectedUserAge;
+
     EditText emailEdt;
     EditText pwEdt;
     EditText sexEdt;
@@ -64,81 +63,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         setToolbar();
         setView();
     }
-
-
-    // 액티비티 툴바를 설정한다.
-    private void setToolbar() {
-        final Toolbar toolbar = findViewById(R.id.toolbar);
-
-        setSupportActionBar(toolbar);
-
-        final ActionBar actionBar = getSupportActionBar();
-
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.nav_drawer_signup);
-        }
-    }
-
-    // 액티비티 화면을 설정한다.
-    private void setView() {
-        idEdt = findViewById(R.id.uid);
-        emailEdt = findViewById(R.id.edt_email);
-        pwEdt = findViewById(R.id.edt_password);
-        sexEdt = findViewById(R.id.edt_sex);
-        sexEdt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setSexTypeDialog();
-            }
-        });
-
-        ageEdt = findViewById(R.id.edt_age);
-        ageEdt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setAgeTypeDialog();
-            }
-        });
-    }
-
-    // 性別 Dialog
-    private void setSexTypeDialog() {
-        final String[] sexTypes = new String[3];
-        sexTypes[0] = getResources().getString(R.string.sex_man);
-        sexTypes[1] = getResources().getString(R.string.sex_woman);
-        sexTypes[2] = getResources().getString(R.string.sex_none);
-
-        new AlertDialog.Builder(this)
-                .setItems(sexTypes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which >= 0) {
-                            sexEdt.setText(sexTypes[which]);
-                        }
-                        dialog.dismiss();
-                    }
-                }).show();
-    }
-
-    // 歳 Dialog
-    private void setAgeTypeDialog() {
-        final String[] ageTypes = new String[2];
-        ageTypes[0] = getResources().getString(R.string.age_under);
-        ageTypes[1] = getResources().getString(R.string.age_adult);
-
-        new AlertDialog.Builder(this)
-                .setItems(ageTypes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which >= 0) {
-                            ageEdt.setText(ageTypes[which]);
-                        }
-                        dialog.dismiss();
-                    }
-                }).show();
-    }
-
 
     /**
      * 右上のメニューを設定（転送）
@@ -164,12 +88,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                GoLib.getInstance().goLoginActivity(context);
                 break;
 
             case R.id.action_submit:
-
-                boolean result = checkEditTextInput(idEdt, emailEdt, pwEdt, sexEdt, ageEdt);
+                //showDialog();
+                boolean result = checkEditTextInput(emailEdt, pwEdt, sexEdt, ageEdt);
 
                 if (result) {
                     save();
@@ -185,6 +109,102 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         return true;
     }
 
+    // 後ろボータンを押したとき、
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
+    public void onClick(View v) {
+    }
+
+
+/////////////////////// FUNCTION
+
+    // 액티비티 툴바를 설정한다.
+    private void setToolbar() {
+        final Toolbar toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+
+        final ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(R.string.nav_drawer_signup);
+        }
+    }
+
+    // 액티비티 화면을 설정한다.
+    private void setView() {
+
+        emailEdt = findViewById(R.id.edt_email);
+        pwEdt = findViewById(R.id.edt_password);
+
+        sexEdt = findViewById(R.id.edt_sex);
+        sexEdt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSexTypeDialog();
+            }
+        });
+
+        ageEdt = findViewById(R.id.edt_age);
+        ageEdt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAgeTypeDialog();
+            }
+        });
+    }
+
+    // 性別 Dialog
+    private void setSexTypeDialog() {
+        final String[] sexTypes = new String[3];
+        sexTypes[0] = getResources().getString(R.string.sex_none);
+        sexTypes[1] = getResources().getString(R.string.sex_man);
+        sexTypes[2] = getResources().getString(R.string.sex_woman);
+
+        new AlertDialog.Builder(this)
+                .setItems(sexTypes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which >= 0) {
+                            selectedUserSex = which;
+                            sexEdt.setText(sexTypes[which]);
+                        }
+                        dialog.dismiss();
+                    }
+                }).show();
+    }
+
+    // 歳 Dialog
+    private void setAgeTypeDialog() {
+        String[] arrAge = getResources().getStringArray(R.array.age_array);
+        int[] arrAgeInt = getResources().getIntArray(R.array.age_int_array);
+        int[] arrDB = new int[1];
+        final String[] ageTypes = new String[arrAge.length];
+
+        for (int i = 0; i < arrAge.length; i++) {
+            ageTypes[i] = arrAge[i];
+        }
+        // ageTypes[0] = getResources().getStringArray(R.array.age_array);
+
+        new AlertDialog.Builder(this)
+                .setItems(ageTypes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which >= 0) {
+                            selectedUserAge = which;
+                            ageEdt.setText(ageTypes[which]);
+                        }
+                        dialog.dismiss();
+                    }
+                }).show();
+    }
+
+
     /**
      * 사용자가 입력한 정보를 MemberInfoItem 객체에 저장해서 반환한다.
      *
@@ -192,34 +212,135 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
      */
     private UserInfoItem getUserInfoItem() {
 
-        UserInfoItem item = new UserInfoItem();
+        UserInfoItem newUserInfoItem = new UserInfoItem();
 
-        item.email = emailEdt.getText().toString();
-        item.pw = pwEdt.getText().toString();
-        item.sex = sexEdt.getText().toString();
-        item.age = ageEdt.getText().toString();
+        newUserInfoItem.email = emailEdt.getText().toString();
+        newUserInfoItem.pw = pwEdt.getText().toString();
 
-        return item;
+        switch (selectedUserSex) {
+            case 0:
+                newUserInfoItem.gender = "E";
+                break;
+            case 1:
+                newUserInfoItem.gender = "M";
+                break;
+            case 2:
+                newUserInfoItem.gender = "W";
+                break;
+            default:
+                newUserInfoItem.gender = "E";
+                break;
+        }
+
+        switch (selectedUserAge) {
+            case 0:
+                newUserInfoItem.age = 0;
+                break;
+            case 1:
+                newUserInfoItem.age = 10;
+                break;
+            case 2:
+                newUserInfoItem.age = 20;
+                break;
+            case 3:
+                newUserInfoItem.age = 30;
+                break;
+            case 4:
+                newUserInfoItem.age = 40;
+                break;
+            case 5:
+                newUserInfoItem.age = 50;
+                break;
+            case 6:
+                newUserInfoItem.age = 60;
+                break;
+            case 7:
+                newUserInfoItem.age = 70;
+                break;
+
+            default:
+                newUserInfoItem.age = 0;
+                break;
+        }
+
+        newUserInfoItem.userStatus = 0;
+
+        return newUserInfoItem;
     }
+
+    // Check Input Value
+    private boolean checkEditTextInput(EditText _email, EditText _pw, EditText _sex, EditText _age) {
+
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(_email.getText().toString()).matches() || _email.getText().toString() == "") {
+            _email.requestFocus();
+            return false;
+        }
+
+        if (!Pattern.matches("^[a-zA-Z0-9!@.#$%^&*?_~]{4,16}$", _pw.getText().toString())) {
+            _pw.requestFocus();
+            Toast.makeText(SignUpActivity.this, "パスワードを確認してください。", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (_sex.getText().toString() == "") {
+            Toast.makeText(SignUpActivity.this, "性別を選択してください。",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (_age.getText().toString() == "") {
+            Toast.makeText(SignUpActivity.this, "歳を選択してください。",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
+    // DIALOG
+    private void showDialog() {
+
+        final EditText edittext = new EditText(this);
+
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.dialog_title));
+        builder.setView(edittext);
+
+        // POSITIVE
+        builder.setPositiveButton(getResources().getString(R.string.dialog_yes),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext(), edittext.getText().toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        //NEGATIVE
+        builder.setNegativeButton(getResources().getString(R.string.dialog_no),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        builder.show();
+    }
+
 
     // ユーザが入力した情報を保存する。
     private void save() {
 
         final UserInfoItem newItem = getUserInfoItem();
         MyLog.d(TAG, "insertItem " + newItem.toString());
-        RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
-        Call<String> call = remoteService.insertUserInfo(newItem);
 
+        RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
+
+        Call<String> call = remoteService.insertUserInfo(newItem);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                String seq = response.body();
+                String email = response.body();
 
                 try {
-                    currentItem.seq = Integer.parseInt(seq);
+                    currentItem.email = email;
 
-                    if (currentItem.seq == 0) {
-                        MyToast.s(context, "currentItem.seq == 0");
+                    if (currentItem.email.equals("")) {
+                        MyToast.s(context, "currentItem.roomInx == 0");
                         return;
                     }
 
@@ -230,7 +351,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
                 currentItem.email = newItem.email;
                 currentItem.pw = newItem.pw;
-                currentItem.sex = newItem.sex;
+                currentItem.gender = newItem.gender;
                 currentItem.age = newItem.age;
 
                 finish();
@@ -243,59 +364,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    // 後ろボータンを押したとき、
-    @Override
-    public void onBackPressed() {
-        finish();
-    }
-
-    @Override
-    public void onClick(View v) {
-    }
-
-    // Check Input Value
-    private boolean checkEditTextInput(EditText _id, EditText _email, EditText _pw, EditText _sex, EditText _age) {
-
-        if (_id.getText().toString() == "") {
-
-            _email.requestFocus();
-
-            return false;
-        }
-
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(_email.getText().toString()).matches()
-                || _email.getText().toString() == "") {
-
-            _email.requestFocus();
-
-            return false;
-        }
-
-        if (!Pattern.matches("^[a-zA-Z0-9!@.#$%^&*?_~]{4,16}$", _pw.getText().toString())) {
-
-            _pw.requestFocus();
-
-            Toast.makeText(SignUpActivity.this, "パスワードを確認してください。",
-                    Toast.LENGTH_SHORT).show();
-
-            return false;
-        }
-
-        if (_sex.getText().toString() == "") {
-            Toast.makeText(SignUpActivity.this, "性別を選択してください。",
-                    Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (_age.getText().toString() == "") {
-            Toast.makeText(SignUpActivity.this, "歳を選択してください。",
-                    Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        return true;
     }
 
 

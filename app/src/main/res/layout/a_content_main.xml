@@ -10,4 +10,5 @@
     tools:showIn="@layout/a_app_bar_main"
     android:background="@color/white_1">
 
+
 </android.support.constraint.ConstraintLayout>

@@ -5,13 +5,11 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-<!--    &lt;!&ndash; 권한 화면 &ndash;&gt;
+    <!-- 권한 화면 -->
     <string name="permission_checking">権限...</string>
     <string name="permission_setting_title">권한 설정</string>
     <string name="permission_setting_message">앱을 실행하기 위해서는 권한 설정을 해야 합니다!</string>
-    <string name="permission_setting_restart">권한을 설정하고 다시 실행해주세요!</string>-->
-
-
+    <string name="permission_setting_restart">권한을 설정하고 다시 실행해주세요!</string>
 
     <!-- 共通 -->
     <string name="skip_string">...</string>
@@ -23,15 +21,21 @@
     <string name="complete">完了</string>
     <string name="save">保存</string>
     <string name="submit">転送</string>
+    <string name="req">申請</string>
     <string name="open_date">開設日</string>
     <string name="open_time">開始時</string>
     <string name="click_me">날래 누르라우!!</string>
-
+    <string name="auto_login">Auto Login</string>
+    <string name="sign_up">会員登録</string>
+    <string name="dialog_yes">SEND</string>
+    <string name="dialog_no">CLOSE</string>
+    <string name="nav_home">HOME</string>
+    <string name="option">OPTION</string>
+    <string name="dialog_title">나를 선택해야 하는 이유</string>
     <string name="network_not_working">네크워크에 연결되어 있지 않습니다.\n확인후 다시 실행해주세요.</string>
 
     <!-- 会員 -->
     <string name="nav_drawer_signup">会員 登録</string>
-
     <string name="nav_drawer_login">ログイン</string>
     <string name="sign_up_email">メール</string>
     <string name="profile_pw">パスワード</string>
@@ -71,10 +75,11 @@
     <string name="is_open_bang">申請</string>
     <string name="is_closed_bang">満員</string>
 
-
-
     <!-- Manage -->
-    <string name="manage_toolbar_title">管理</string>
+    <string name="nav_manage_room">部屋管理</string>
+    <string name="nav_manage_user">個人管理</string>
+    <string name="tab_manage_applied_room">申込リスト</string>
+    <string name="tab_manage_made_room">マイホームリスト</string>
 
 
     <!-- 並べ替え -->

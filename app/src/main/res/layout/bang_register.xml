@@ -17,21 +17,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/register_category_display"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/spacing_small"
-                android:textColor="@color/text_color_black"
                 android:layout_weight="2"
-                android:text="@string/category" />
+                android:text="@string/category"
+                android:textColor="@color/text_color_black" />
+
             <Spinner
                 android:id="@+id/spn_bang_category"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_margin="@dimen/spacing_small"
-                android:background="@drawable/bg_round"
                 android:layout_weight="1"
+                android:background="@drawable/bg_round"
                 android:gravity="center_vertical|right"
                 android:nextFocusDown="@+id/register_bang_date" />
         </LinearLayout>
@@ -47,14 +49,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/register_date_display"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/spacing_small"
-                android:textColor="@color/text_color_black"
                 android:layout_weight="2"
-                android:text="@string/open_date" />
+                android:text="@string/open_date"
+                android:textColor="@color/text_color_black" />
+
             <TextView
                 android:id="@+id/register_bang_date"
                 android:layout_width="match_parent"
@@ -63,8 +67,8 @@
                 android:layout_weight="1"
                 android:background="@drawable/bg_round"
                 android:gravity="center_vertical|right"
-                android:textColor="@color/primaryColorDark"
-                android:hint="@string/click_me"/>
+                android:hint="@string/click_me"
+                android:textColor="@color/primaryColorDark" />
         </LinearLayout>
 
         <!-- TIME -->
@@ -72,24 +76,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/register_time_display"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/spacing_small"
-                android:textColor="@color/text_color_black"
                 android:layout_weight="2"
-                android:text="@string/open_time" />
+                android:text="@string/open_time"
+                android:textColor="@color/text_color_black" />
+
             <TextView
                 android:id="@+id/register_bang_time"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_margin="@dimen/spacing_small"
-                android:background="@drawable/bg_round"
                 android:layout_weight="1"
-                android:textColor="@color/primaryColorDark"
+                android:background="@drawable/bg_round"
                 android:gravity="center_vertical|right"
-                android:hint="@string/click_me" />
+                android:hint="@string/click_me"
+                android:textColor="@color/primaryColorDark" />
         </LinearLayout>
 
         <TextView
@@ -102,26 +108,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/register_place_display"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/spacing_small"
-                android:textColor="@color/text_color_black"
                 android:layout_weight="2"
-                android:text="@string/host_place" />
+                android:text="@string/host_place"
+                android:textColor="@color/text_color_black" />
 
             <EditText
                 android:id="@+id/display_adr"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_margin="@dimen/spacing_small"
-                android:background="@drawable/bg_round"
                 android:layout_weight="1"
+                android:background="@drawable/bg_round"
                 android:gravity="center_vertical"
-                android:textAlignment="center"
                 android:hint="@string/input_bang_adr"
-                android:inputType="text"/>
+                android:inputType="text"
+                android:textAlignment="center" />
         </LinearLayout>
 
         <TextView
@@ -136,6 +143,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/child_margin_top"
             android:background="@drawable/bg_round">
+
             <EditText
                 android:id="@+id/bang_description"
                 android:layout_width="match_parent"
@@ -153,16 +161,5 @@
                 android:textSize="@dimen/text_size_small2" />
         </android.support.design.widget.TextInputLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="60dp"
-            android:background="#55AAAAAA" />
-
-        <Button
-            android:id="@+id/btn_bang_regi_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="保存"/>
-      </LinearLayout>
+    </LinearLayout>
 </ScrollView>
