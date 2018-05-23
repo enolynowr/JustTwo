@@ -45,7 +45,6 @@ public class MyApp extends Application {
         SocialLogin.init(getApplicationContext());
 
         // FileUriExposedException 문제를 해결하기 위한 코드
-        // 관련 설명은 책의 [참고] 페이지 참고
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
