@@ -51,19 +51,19 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
         holder.rowCategory.setText(item.category);
         holder.rowDate.setText(item.dateTime);
         holder.rowPlace.setText(item.location);
-        holder.rowDesc.setText(item.desc);
-        holder.btnRowRoomStatus.setText("not vacant");
+        holder.rowDesc.setText(item.description);
 
-        /*switch (item.appliedRoomStatus) {
+        holder.btnRowRoomStatus.setText(" vacant");
 
-            case 3:
-                holder.btnRowRoomStatus.setText("申請");
+        switch (item.roomStatus) {
+            case 0:
+                holder.btnRowRoomStatus.setText("空部屋");
                 break;
-
-            case 4:
-                holder.btnRowRoomStatus.setText("満員");
+            case 1:
+                holder.btnRowRoomStatus.setText("満席");
+                holder.btnRowRoomStatus.setEnabled(false);
                 break;
-        }*/
+        }
 
         holder.btnRowRoomStatus.setOnClickListener(new View.OnClickListener() {
             @Override

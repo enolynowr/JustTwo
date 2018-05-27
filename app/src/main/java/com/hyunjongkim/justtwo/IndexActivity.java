@@ -29,13 +29,8 @@ import retrofit2.Response;
 
 // DECIDE RUNNING MAIN ACTIVITY OR LOGIN ACTIVITY AFTER CHECK USER INFO
 public class IndexActivity extends AppCompatActivity {
-
     private final String TAG = this.getClass().getSimpleName();
     Context context;
-    SharedPreferences shared;
-
-    String tempId = "khj@gmail.com";
-    String tempPw = "1234";
 
     // IF ISN'T CONNECTING TO INTERNET THEN CALL showNoService()
     @Override
@@ -43,7 +38,6 @@ public class IndexActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
         context = this;
-
         if (!RemoteLib.getInstance().isConnected(context)) {
             showNoService();
             return;
@@ -71,59 +65,65 @@ public class IndexActivity extends AppCompatActivity {
         TextView messageText = findViewById(R.id.message);
         messageText.setVisibility(View.VISIBLE);
         Button closeButton = findViewById(R.id.close);
-
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-
         closeButton.setVisibility(View.VISIBLE);
     }
 
     public void startTask() {
+        SharedPreferences shared = getSharedPreferences("setting", 0);
 
-        shared = getSharedPreferences("setting", 0);
+        // IF NOT AUTO LOGIN, GO TO LOGIN
+        if (shared.getBoolean("Auto_Login_enabled", false) == false) {
+            GoLib.getInstance().goLoginActivity(this);
 
-        // HAVE USER INFO
-        if (tempId.equals(tempId) && tempPw.equals(tempPw)) {
+            return;
 
-            // AUTO LOGIN IS FALSE
-            if (shared.getBoolean("Auto_Login_enabled", false) == false) {
-                GoLib.getInstance().goLoginActivity(this);
-                return;
-            } else {
-                GoLib.getInstance().goMainActivity(this);
-                return;
-            }
+        } else {
+
+            shared.getString("USER_ID", "");
+            UserInfoItem userInfoItemForshared = new UserInfoItem();
+
+            userInfoItemForshared.setEmail(shared.getString("USER_EMAIL", ""));
+            userInfoItemForshared.setPw(shared.getString("USER_PW", ""));
+            userInfoItemForshared.setUserId(Integer.parseInt(shared.getString("USER_ID", "")));
+
+            // CALL SERVER
+            ((MyApp) getApplication()).setUserInfoItem(userInfoItemForshared);
+            GoLib.getInstance().goMainActivity(getApplicationContext());
+            return;
         }
 
-        // HAVE NOT USER INFO
-        GoLib.getInstance().goSignUpActivity(this);
+
     }
 
-    // selectUserInfo();
-    // todo check shared value
-
-
-
-
-    /*public void selectUserInfo(String email) {
+    public void selectUserInfo(UserInfoItem userInfoItem) {
         RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
 
-        Call<UserInfoItem> call = remoteService.selectMemberInfo(email);
+
+        Call<UserInfoItem> call = remoteService.selectUserInfo(userInfoItem);
+
         call.enqueue(new Callback<UserInfoItem>() {
             @Override
             public void onResponse(Call<UserInfoItem> call, Response<UserInfoItem> response) {
                 UserInfoItem item = response.body();
 
-                if (response.isSuccessful() && !StringLib.getInstance().isBlank(item.name)) {
+                if (response.isSuccessful() && item.getResCd().equals("0000")) {
+
                     MyLog.d(TAG, "success " + response.body().toString());
-                    setMemberInfoItem(item);
+
+                    ((MyApp) getApplication()).setUserInfoItem(item);
+
+                    MyLog.d(TAG, "MYAPP_USERID " + ((MyApp) getApplication()).getUserInfoItem().getUserId());
+                    GoLib.getInstance().goMainActivity(getApplicationContext());
+
                 } else {
                     MyLog.d(TAG, "not success");
-                    goSignUpActivity(item);
+
                 }
             }
 
@@ -133,7 +133,7 @@ public class IndexActivity extends AppCompatActivity {
                 MyLog.d(TAG, t.toString());
             }
         });
-    }*/
+    }
 
     /**
      * SAVE GETTING USER INFO ITEM TO INSTANCE Application
@@ -144,6 +144,7 @@ public class IndexActivity extends AppCompatActivity {
         //((MyApp) getApplicationContext()).setMemberInfoItem(item);
         //startMain();
     }*/
+
 
 }
 

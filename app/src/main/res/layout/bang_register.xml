@@ -161,5 +161,11 @@
                 android:textSize="@dimen/text_size_small2" />
         </android.support.design.widget.TextInputLayout>
 
+        <Button
+            android:id="@+id/btn_room_info_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SAVE"/>
+
     </LinearLayout>
 </ScrollView>

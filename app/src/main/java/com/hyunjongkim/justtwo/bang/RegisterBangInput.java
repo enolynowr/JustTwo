@@ -17,13 +17,13 @@ import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 import com.hyunjongkim.justtwo.a_lib.DialogLib;
+import com.hyunjongkim.justtwo.a_lib.GoLib;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
 import com.hyunjongkim.justtwo.a_remote.RemoteService;
 import com.hyunjongkim.justtwo.a_remote.ServiceGenerator;
 
 import org.parceler.Parcels;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,6 +41,8 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
     Address address;
 
     // View 관련
+
+
     Spinner spnCategory;
     ArrayAdapter<String> adapter;
     String[] spnData;
@@ -66,6 +68,7 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
     /**
      * CALLING ON MAKING FRAGMENT 프래그먼트가 생성될 때 호출되며 인자에 저장된 FoodInfoItem를
      * BestFoodRegisterActivity에 currentItem를 저장한다.
+     *
      * @param savedInstanceState 프래그먼트가 새로 생성되었을 경우, 이전 상태 값을 가지는 객체
      */
     @Override
@@ -106,7 +109,7 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
         }
     }
 
-    //CALLING AFTER onCreateView() METHOD
+    // CALLING AFTER onCreateView() METHOD
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -124,22 +127,26 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
         // Description
         descriptionEdit = view.findViewById(R.id.bang_description);
 
+        btnSaveBangInfo = view.findViewById(R.id.btn_room_info_save);
+        btnSaveBangInfo.setOnClickListener(this);
     }
 
     // PROCESSING CLICKING
     @Override
     public void onClick(View v) {
 
-        // User ID
-//        infoItem.userEmail = ((MyApp) context.getApplicationContext()).getUserEmail();
-        // Category
-        infoItem.category = spnCategory.getSelectedItem().toString();
-        // Date
-//        infoItem.hostDate = dateTv.getText().toString();
-        // Time
-        infoItem.location = adrTv.getText().toString();
+        ;
+        // User id
+        infoItem.setUserId(Integer.parseInt(((MyApp) context.getApplicationContext()).getResUserInfo().getUser_id()));
+        // User category
+        infoItem.setCategory(spnCategory.getSelectedItem().toString());
+        // Date and time
+        String dateAndTime = dateTv.getText().toString() + " "+ timeTv.getText().toString();
+        infoItem.setDateTime(dateAndTime);
+        // Location
+        infoItem.setLocation(adrTv.getText().toString());
         // Description
-        infoItem.desc = descriptionEdit.getText().toString();
+        infoItem.setDescription(descriptionEdit.getText().toString());
 
         MyLog.d(TAG, "onClick imageItem " + infoItem);
 
@@ -153,7 +160,11 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
             dialogLib.setTimePicker(getContext(), timeTv);
         }
 
+        if (v.getId() == R.id.btn_room_info_save){
 
+            regiRoomInfo(infoItem);
+
+        }
     }
 /////////////////////// FUNCTION
 
@@ -180,47 +191,39 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
             return;
         }*/
 
-        insertFoodInfo();
     }
 
-
     // Save the info of room to the Server.
-    private void insertFoodInfo() {
+    private void regiRoomInfo(RoomInfoItem roomInfoItem) {
 
-        MyLog.d(TAG, infoItem.toString());
+        MyLog.d(TAG, roomInfoItem.toString());
         RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
-        Call<String> call = remoteService.insertBangInfo(infoItem);
+        Call<RoomInfoItem> call = remoteService.regiRoomInfo(roomInfoItem);
 
-        call.enqueue(new Callback<String>() {
+        //
+        call.enqueue(new Callback<RoomInfoItem>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    int seq = 0;
-                    String seqString = response.body();
+            public void onResponse(Call<RoomInfoItem> call, Response<RoomInfoItem> response) {
 
-                    try {
-                        seq = Integer.parseInt(seqString);
-                    } catch (Exception e) {
-                        seq = 0;
-                    }
+                RoomInfoItem roomInfoItem = response.body();
 
-                    if (seq == 0) {
-                        //등록 실패
-                    } else {
-                        infoItem.roomInx = seq;
+                if (response.isSuccessful() && roomInfoItem.getResCd().equals("0000")) {
 
-                    }
+                    MyLog.d(TAG, "SUCEESS " + roomInfoItem.getResCd().toString());
+                    GoLib.getInstance().goMainActivity(context);
+
                 } else { // 등록 실패
-                    int statusCode = response.code();
+                   /* int statusCode = response.code();
                     ResponseBody errorBody = response.errorBody();
-                    MyLog.d(TAG, "fail " + statusCode + errorBody.toString());
+                    MyLog.d(TAG, "fail " + statusCode + errorBody.toString());*/
                 }
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<RoomInfoItem> call, Throwable t) {
                 MyLog.d(TAG, "no internet connectivity");
             }
         });
     }
+
 }

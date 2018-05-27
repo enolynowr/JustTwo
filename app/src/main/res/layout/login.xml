@@ -63,15 +63,19 @@
                 android:layout_weight="2"
                 android:text="@string/auto_login" />
 
-            <Button
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
                 android:id="@+id/btn_login"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/ti_password"
-                android:layout_weight="2"
-                android:background="@color/primaryColor"
+                android:layout_alignParentEnd="true"
+                android:gravity="bottom"
                 android:text="LOGIN"
-                android:textColor="@color/snow" />
+                app:bootstrapBrand="warning"
+                app:bootstrapSize="lg"
+                app:buttonMode="regular"
+                app:roundedCorners="true"
+                app:showOutline="false" />
         </LinearLayout>
 
         <TextView
@@ -86,6 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <!--Line Btn-->
             <ImageButton
                 android:id="@+id/btn_lg_line"
@@ -102,9 +107,7 @@
                 android:layout_height="60dp"
                 android:layout_margin="6dp"
                 android:background="@color/tw__tweet_action_color"
-
                 android:scaleType="centerInside"
-
                 android:src="@drawable/tw__composer_logo_white" />
 
 

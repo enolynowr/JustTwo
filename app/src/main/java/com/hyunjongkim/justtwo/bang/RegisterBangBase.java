@@ -15,6 +15,12 @@ import com.hyunjongkim.justtwo.R;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 import com.hyunjongkim.justtwo.a_lib.GoLib;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
+import com.hyunjongkim.justtwo.a_remote.RemoteService;
+import com.hyunjongkim.justtwo.a_remote.ServiceGenerator;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 // MAKE ROOM ACTIVITY
 public class RegisterBangBase extends AppCompatActivity {
@@ -93,4 +99,7 @@ public class RegisterBangBase extends AppCompatActivity {
             actionBar.setTitle(R.string.register_bang);
         }
     }
+
+
+
 }

@@ -24,7 +24,7 @@
             android:value="ApiKey" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="IndexActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -37,6 +37,8 @@
         <activity android:name=".bang.RegisterBangBase" />
         <activity android:name=".manage.Management"/>
         <activity android:name=".bang.InfoBang"/>
+        <activity android:name=".MainActivity"/>
+        <activity android:name=".user.Login"/>
 
     </application>
 

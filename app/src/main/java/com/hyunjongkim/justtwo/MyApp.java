@@ -3,7 +3,9 @@ package com.hyunjongkim.justtwo;
 import android.app.Application;
 import android.os.StrictMode;
 
+import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.hyunjongkim.justtwo.a_item.ManagementInfoItem;
+import com.hyunjongkim.justtwo.a_item.ResUserInfo;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 import com.hyunjongkim.justtwo.user.social_login.LineConfig;
@@ -18,26 +20,20 @@ import com.hyunjongkim.justtwo.user.social_login.impl.SocialType;
 public class MyApp extends Application {
     private UserInfoItem userInfoItem;
     private RoomInfoItem roomInfoItem;
-    private String sharedId;
-    private String sharedPw;
+    private ResUserInfo resUserInfo;
 
-    public String getSharedId() {
-        return sharedId;
+    public ResUserInfo getResUserInfo() {
+        return resUserInfo;
     }
 
-    public void setSharedId(String sharedId) {
-        this.sharedId = sharedId;
-    }
-
-    public String getSharedPw() {
-        return sharedPw;
-    }
-
-    public void setSharedPw(String sharedPw) {
-        this.sharedPw = sharedPw;
+    public void setResUserInfo(ResUserInfo resUserInfo) {
+        this.resUserInfo = resUserInfo;
     }
 
     private ManagementInfoItem managementInfoItem;
+
+    private String sharedId;
+    private String sharedPw;
 
     @Override
     public void onCreate() {
@@ -48,7 +44,7 @@ public class MyApp extends Application {
         // 관련 설명은 책의 [참고] 페이지 참고
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-
+        TypefaceProvider.registerDefaultIconSets();
         socialLoginInit();
     }
 
@@ -66,6 +62,8 @@ public class MyApp extends Application {
         this.userInfoItem = item;
     }
 
+
+
     public String getUserEmail() {
 
         return userInfoItem.email;
@@ -79,14 +77,14 @@ public class MyApp extends Application {
         return roomInfoItem;
     }
 
-    public void socialLoginInit(){
+    public void socialLoginInit() {
 
         // LINE
 
         LineConfig lineConfig = new LineConfig.Builder()
                 .setChannelId("1581878477")
                 .build();
-        SocialLogin.addType(SocialType.LINE,lineConfig);
+        SocialLogin.addType(SocialType.LINE, lineConfig);
 
         // TWITTER
 
@@ -96,7 +94,6 @@ public class MyApp extends Application {
                 .build();
         SocialLogin.addType(SocialType.TWITTER, twitterConfig);
     }
-
 
 
 }

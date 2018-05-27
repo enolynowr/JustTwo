@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -29,10 +27,6 @@ import com.hyunjongkim.justtwo.a_remote.ServiceGenerator;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainList extends Fragment implements View.OnClickListener {
 
@@ -221,7 +215,8 @@ public class MainList extends Fragment implements View.OnClickListener {
         roomInfoItem.category = "Lang";
         roomInfoItem.location = "Tokyo";
         roomInfoItem.dateTime = "2017/05/17";
-        roomInfoItem.desc = "i m hot";
+        roomInfoItem.description = "i m hot";
+        roomInfoItem.roomStatus = 0;
         list.add(roomInfoItem);
 
 

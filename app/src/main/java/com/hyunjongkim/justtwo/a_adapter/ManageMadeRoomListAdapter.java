@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
+import com.hyunjongkim.justtwo.a_item.ManagementInfoItem;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
@@ -23,39 +24,24 @@ public class ManageMadeRoomListAdapter extends RecyclerView.Adapter<ManageMadeRo
 
     private Context context;
     private ArrayList<RoomInfoItem> itemList;
+    private ArrayList<ManagementInfoItem> manageItemList;
+    private ManagementInfoItem manageItem;
     private UserInfoItem userInfoItem;
 
     private int resource;
 
     //Constructor
-    public ManageMadeRoomListAdapter(Context context, int resource, ArrayList<RoomInfoItem> itemList) {
+    public ManageMadeRoomListAdapter(Context context, int resource,
+                                     ArrayList<RoomInfoItem> itemList, ArrayList<ManagementInfoItem> manageItemList) {
+
         this.context = context;
         this.resource = resource;
         this.itemList = itemList;
+        this.manageItemList = manageItemList;
 
         userInfoItem = ((MyApp) context.getApplicationContext()).getUserInfoItem();
     }
 
-    //
-    public void setItem(RoomInfoItem newItem) {
-        for (int i = 0; i < itemList.size(); i++) {
-            RoomInfoItem item = itemList.get(i);
-
-            if (item.roomInx == newItem.roomInx) {
-                itemList.set(i, newItem);
-
-                notifyItemRemoved(i);
-
-                break;
-            }
-        }
-    }
-
-    public void addItemList(ArrayList<RoomInfoItem> itemList) {
-        this.itemList.addAll(itemList);
-
-        notifyDataSetChanged();
-    }
 
 
     @NonNull
@@ -69,12 +55,15 @@ public class ManageMadeRoomListAdapter extends RecyclerView.Adapter<ManageMadeRo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final RoomInfoItem item = itemList.get(position);
+        final ManagementInfoItem manageItem = manageItemList.get(position);
+
         MyLog.d(TAG, "getView" + item);
 
         //holder.rowCategory.setText(item.category);
         holder.rowDate.setText("2018-05-16");
         holder.rowPlace.setText("TOKYO");
         holder.rowDesc.setText("are you ready!!");
+        //holder.btnRowApplyStatus.
 
         // 部屋のStatus文字の変更
   /*      switch (item.status) {
@@ -102,9 +91,9 @@ public class ManageMadeRoomListAdapter extends RecyclerView.Adapter<ManageMadeRo
         return this.itemList.size();
     }
 
+////////////////////// FUNCTION ////////////////////////////////////////////////////////////////
+
     public class ViewHolder extends RecyclerView.ViewHolder {
-
-
         TextView rowDate;
         TextView rowPlace;
         TextView rowDesc;
@@ -112,11 +101,29 @@ public class ManageMadeRoomListAdapter extends RecyclerView.Adapter<ManageMadeRo
 
         public ViewHolder(View itemView) {
             super(itemView);
-
             rowDate = itemView.findViewById(R.id.row_manage_date);
             rowPlace = itemView.findViewById(R.id.row_manage_place);
             rowDesc = itemView.findViewById(R.id.row_manage_description);
             btnRowApplyStatus = itemView.findViewById(R.id.btn_row_manage_apply_status);
         }
+    }
+
+    //
+    public void setItem(RoomInfoItem newItem) {
+        for (int i = 0; i < itemList.size(); i++) {
+            RoomInfoItem item = itemList.get(i);
+
+            if (item.roomInx == newItem.roomInx) {
+                itemList.set(i, newItem);
+                notifyItemRemoved(i);
+
+                break;
+            }
+        }
+    }
+
+    public void addItemList(ArrayList<RoomInfoItem> itemList) {
+        this.itemList.addAll(itemList);
+        notifyDataSetChanged();
     }
 }

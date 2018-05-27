@@ -1,5 +1,6 @@
 package com.hyunjongkim.justtwo.a_remote;
 
+import com.hyunjongkim.justtwo.a_item.ResUserInfo;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 
@@ -22,13 +23,13 @@ public interface RemoteService {
 /// USER
 
     // Select Info of User
-    @POST("/users/{email}/{pw}")
-    Call<UserInfoItem> selectUserInfo(@Path("email") String email, @Path("pw") String pw);
+    @POST("/users/getUserInfo")
+    Call<UserInfoItem> selectUserInfo(@Body UserInfoItem userInfoItem);
 
     // POST
     // Register User
     @POST("/users/regUserInfo")
-    Call<String> insertUserInfo(@Body UserInfoItem userInfoItem);
+    Call<UserInfoItem> insertUserInfo(@Body UserInfoItem userInfoItem);
 
 
 /// ROOM
@@ -47,6 +48,6 @@ public interface RemoteService {
                                            @Query("current_page") int currentPage);
 
     // Insert info of bang
-    @POST("/bang/info")
-    Call<String> insertBangInfo(@Body RoomInfoItem infoItem);
+    @POST("/rooms/regRoomInfo")
+    Call<RoomInfoItem> regiRoomInfo(@Body RoomInfoItem infoItem);
 }

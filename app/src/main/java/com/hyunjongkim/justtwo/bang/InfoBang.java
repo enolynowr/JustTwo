@@ -8,20 +8,17 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
@@ -181,8 +178,8 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
             hostPlace.setVisibility(View.GONE);
         }
 
-        if (!StringLib.getInstance().isBlank(item.desc)) {
-            description.setText(item.desc);
+        if (!StringLib.getInstance().isBlank(item.description)) {
+            description.setText(item.description);
         } else {
             description.setText(R.string.no_text);
         }
@@ -206,7 +203,7 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
                     loadingText.setVisibility(View.GONE);
                 } else {
                     // loadingText.setVisibility(View.VISIBLE);
-                    ((TextView) findViewById(R.id.loading_text)).setText(R.string.loading_not);
+                   // ((TextView) findViewById(R.id.loading_text)).setText(R.string.loading_not);
                 }
             }
 

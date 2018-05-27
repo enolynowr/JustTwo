@@ -18,7 +18,6 @@ import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 import com.hyunjongkim.justtwo.a_lib.GoLib;
-import com.hyunjongkim.justtwo.a_lib.MyLog;
 import com.hyunjongkim.justtwo.a_lib.MyToast;
 import com.hyunjongkim.justtwo.a_remote.RemoteService;
 import com.hyunjongkim.justtwo.a_remote.ServiceGenerator;
@@ -283,12 +282,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         if (_sex.getText().toString() == "") {
-            Toast.makeText(SignUpActivity.this, "性別を選択してください。",Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignUpActivity.this, "性別を選択してください。", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (_age.getText().toString() == "") {
-            Toast.makeText(SignUpActivity.this, "歳を選択してください。",Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignUpActivity.this, "歳を選択してください。", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -325,23 +324,31 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     // ユーザが入力した情報を保存する。
     private void save() {
 
-        final UserInfoItem newItem = getUserInfoItem();
-        MyLog.d(TAG, "insertItem " + newItem.toString());
+        UserInfoItem userInfoItem = getUserInfoItem();
+        //MyLog.d(TAG, "insertItem " + newItem.toString());
 
         RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
 
-        Call<String> call = remoteService.insertUserInfo(newItem);
-        call.enqueue(new Callback<String>() {
+        Call<UserInfoItem> call = remoteService.insertUserInfo(userInfoItem);
+        call.enqueue(new Callback<UserInfoItem>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                String email = response.body();
+            public void onResponse(Call<UserInfoItem> call, Response<UserInfoItem> response) {
+
+                //ResUserInfo resResult = response.body();
+                response.body().toString();
+                // resResult.getResCd();
+                UserInfoItem userInfoItem1 = response.body();
+
+                //Log.d(">>>>>>>>>>>>>>ssss",  userInfoItem1.getResCd() );
+                userInfoItem1.getResCd();
 
                 try {
-                    currentItem.email = email;
+                    //currentItem.email = email;
 
-                    if (currentItem.email.equals("")) {
-                        MyToast.s(context, "currentItem.roomInx == 0");
-                        return;
+                    if (userInfoItem1.getResCd().equals("0000")) {
+                        GoLib.getInstance().goLoginActivity(context);
+                        MyToast.s(context, "WELCOM!!!!!!!!!!!!!!!!");
+
                     }
 
                 } catch (Exception e) {
@@ -349,16 +356,17 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     return;
                 }
 
-                currentItem.email = newItem.email;
+                /*currentItem.email = newItem.email;
                 currentItem.pw = newItem.pw;
                 currentItem.gender = newItem.gender;
-                currentItem.age = newItem.age;
+                currentItem.age = newItem.age;*/
 
                 finish();
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<UserInfoItem> call, Throwable t) {
+                t.getStackTrace().toString();
                 Toast.makeText(getApplicationContext(),
                         getResources().getString(R.string.sign_up_insert_fail_msg),
                         Toast.LENGTH_SHORT).show();

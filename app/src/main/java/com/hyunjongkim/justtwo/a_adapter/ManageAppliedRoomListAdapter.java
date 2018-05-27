@@ -13,6 +13,7 @@ import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
+import com.hyunjongkim.justtwo.a_lib.GoLib;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
 
 import java.util.ArrayList;
@@ -22,27 +23,27 @@ public class ManageAppliedRoomListAdapter extends RecyclerView.Adapter<ManageApp
     private final String TAG = this.getClass().getSimpleName();
 
     private Context context;
-    private ArrayList<RoomInfoItem> itemList;
+    private ArrayList<RoomInfoItem> roomItemList;
     private UserInfoItem userInfoItem;
 
     private int resource;
 
     //Constructor
-    public ManageAppliedRoomListAdapter(Context context, int resource, ArrayList<RoomInfoItem> itemList) {
+    public ManageAppliedRoomListAdapter(Context context, int resource, ArrayList<RoomInfoItem> roomItemList) {
         this.context = context;
         this.resource = resource;
-        this.itemList = itemList;
 
+        this.roomItemList = roomItemList;
         userInfoItem = ((MyApp) context.getApplicationContext()).getUserInfoItem();
     }
 
     //
     public void setItem(RoomInfoItem newItem) {
-        for (int i = 0; i < itemList.size(); i++) {
-            RoomInfoItem item = itemList.get(i);
+        for (int i = 0; i < roomItemList.size(); i++) {
+            RoomInfoItem item = roomItemList.get(i);
 
             if (item.roomInx == newItem.roomInx) {
-                itemList.set(i, newItem);
+                roomItemList.set(i, newItem);
 
                 notifyItemRemoved(i);
 
@@ -51,8 +52,8 @@ public class ManageAppliedRoomListAdapter extends RecyclerView.Adapter<ManageApp
         }
     }
 
-    public void addItemList(ArrayList<RoomInfoItem> itemList) {
-        this.itemList.addAll(itemList);
+    public void addItemList(ArrayList<RoomInfoItem> roomItemList) {
+        this.roomItemList.addAll(roomItemList);
 
         notifyDataSetChanged();
     }
@@ -68,16 +69,22 @@ public class ManageAppliedRoomListAdapter extends RecyclerView.Adapter<ManageApp
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final RoomInfoItem item = itemList.get(position);
-        MyLog.d(TAG, "getView" + item);
+        final RoomInfoItem roomItem = roomItemList.get(position);
+
+        MyLog.d(TAG, "getView" + roomItem );
 
         //holder.rowCategory.setText(item.category);
-        holder.rowDate.setText("2018-05-16");
-        holder.rowPlace.setText("TOKYO");
-        holder.rowDesc.setText("are you ready!!");
+        holder.rowDate.setText(roomItem.dateTime);
+        holder.rowPlace.setText(roomItem.location);
+        holder.rowDesc.setText(roomItem.description);
 
         // 部屋のStatus文字の変更
-        switch (item.appliedRoomStatus) {
+       /* 0	承認待ち(申請中)
+          1	承認済み(申請完了)
+          2	承認拒否 (申請失敗)
+          9	満了
+          */
+        switch (roomItem.roomStatus) {
             case 0:
                 holder.rowAppliedRoomStatus.setText(R.string.checking);
                 break;
@@ -87,19 +94,22 @@ public class ManageAppliedRoomListAdapter extends RecyclerView.Adapter<ManageApp
             case 2:
                 holder.rowAppliedRoomStatus.setText(R.string.disapprove);
                 break;
+            case 9:
+                holder.rowAppliedRoomStatus.setText(R.string.expired_room_date);
+                break;
         }
 
         holder.rowAppliedRoomStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // todo
+                GoLib.getInstance().goInfoBang(context);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return this.itemList.size();
+        return this.roomItemList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

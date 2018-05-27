@@ -47,7 +47,7 @@ public class DialogLib {
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
 
-                        _dateDisplay.setText((monthOfYear + 1) + "月" + dayOfMonth + "日" + year + "年");
+                        _dateDisplay.setText(year + "-" + (monthOfYear + 1) +"-"+ dayOfMonth );
 
                     }
                 }, _year, _month, _day);
@@ -73,7 +73,7 @@ public class DialogLib {
                     public void onTimeSet(TimePicker view, int hourOfDay,
                                           int minute) {
 
-                        _timeDisplay.setText(hourOfDay + "時" + minute + "分");
+                        _timeDisplay.setText(hourOfDay + ":" + minute );
                     }
                 }, mHour, mMinute, false);
 

@@ -8,22 +8,23 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
+import com.hyunjongkim.justtwo.a_item.ResUserInfo;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 import com.hyunjongkim.justtwo.a_lib.GoLib;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
-import com.hyunjongkim.justtwo.a_lib.StringLib;
 import com.hyunjongkim.justtwo.a_remote.RemoteService;
 import com.hyunjongkim.justtwo.a_remote.ServiceGenerator;
 import com.hyunjongkim.justtwo.user.social_login.LineLogin;
@@ -47,22 +48,21 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     //SOCIAL LOGIN
     private LineLogin lineModule;
     private TwitterLogin twitterModule;
-
+    UserInfoItem userInfoItem;
     // AUTO LOGIN
     SharedPreferences.Editor editor;
     SharedPreferences sharedPreferences;
 
     boolean loginChecked;
     EditText edtEmail, edtPw;
-    Button btnLogin;
+
+    BootstrapButton btnLogin;
+    //Button btnLogin;
     ImageButton btnLineLogin;
     ImageButton btnTwitterLogin;
     Context context;
     String valEdtEmail, valEdtPw;
     CheckBox autoLogin;
-
-    String dmEmail = "khj@gmail.com";
-    String dmPw = "1234";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,28 +73,24 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         setView();
         setAutoLogin();
         lineLogin();
-        twitterLogin();
+        //twitterLogin();
     }
 
     // ON CLICK
     @Override
     public void onClick(View v) {
-
         switch (v.getId()) {
-
             case R.id.btn_login:
                 valEdtPw = edtPw.getText().toString();
                 valEdtEmail = edtEmail.getText().toString();
-                selectUserInfo(valEdtEmail, valEdtPw);
-                break;
 
+                callProcessUserInfo();
+                break;
             case R.id.auto_login:
                 break;
-
             case R.id.btn_lg_line:
                 lineModule.onLogin();
                 break;
-
             case R.id.btn_lg_tw:
                 twitterModule.onLogin();
                 break;
@@ -187,28 +183,37 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private void checkLoginInfo() { //todo
     }
 
-    public void selectUserInfo(String _email, String _pw) {
+    public void callProcessUserInfo() {
 
-       /* RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
+        UserInfoItem sendToDbUserItem = getUserInfoItem();
 
-        Call<UserInfoItem> call = remoteService.selectUserInfo(email, pw);
+        ResUserInfo resUserInfo = new ResUserInfo();
+
+
+        final RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
+
+        Call<UserInfoItem> call = remoteService.selectUserInfo(sendToDbUserItem);
         call.enqueue(new Callback<UserInfoItem>() {
             @Override
             public void onResponse(Call<UserInfoItem> call, Response<UserInfoItem> response) {
-                UserInfoItem item = response.body();
 
-                if (response.isSuccessful() && !StringLib.getInstance().isBlank(item.email)) {
+                userInfoItem = response.body();
+
+                ResUserInfo resUserInfo1 = userInfoItem.getResResults();
+                if (response.isSuccessful() && userInfoItem.getResCd().equals("0000")) {
                     MyLog.d(TAG, "success " + response.body().toString());
 
-                    if (edtEmail.getText().toString().equals(item.email) && edtPw.getText().toString().equals(item.pw)) {
-                        GoLib.getInstance().goMainActivity(context);
-                    }
 
-                    setUserInfoItem(item);
+                    ((MyApp) getApplication()).setResUserInfo(resUserInfo1);
+
+                    resUserInfo1.getEmail();
+                    editor.putString("USER_ID", userInfoItem.getResResults().getUser_id());
+                    editor.commit();
+
+                    GoLib.getInstance().goMainActivity(context);
 
                 } else {
                     MyLog.d(TAG, "not success");
-
                 }
             }
 
@@ -217,20 +222,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 MyLog.d(TAG, "no internet connectivity");
                 MyLog.d(TAG, t.toString());
             }
-        });*/
-
-
-        if (_email.equals(dmEmail) && _pw.equals(dmPw)) {
-            GoLib.getInstance().goMainActivity(context);
-        }
-    }
-
-    private void setUserInfoItem(UserInfoItem userInfoItem) {
-        ((MyApp) getApplicationContext()).setUserInfoItem(userInfoItem);
+        });
     }
 
     private void setAutoLogin() {
-        //AUTO LOGIN
         sharedPreferences = getSharedPreferences("setting", 0);
         editor = sharedPreferences.edit();
 
@@ -248,9 +243,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 if (isChecked) {
                     String ID = edtEmail.getText().toString();
                     String PW = edtPw.getText().toString();
-                    editor.putString("ID", ID);
-                    editor.putString("PW", PW);
+                    editor.putString("USER_EMAIL", ID);
+                    editor.putString("USER_PW", PW);
                     editor.putBoolean("Auto_Login_enabled", true);
+                    //editor.putString("USER_ID", userInfoItem.getResResults().getUser_id());
                     editor.commit();
 
                 } else {
@@ -262,9 +258,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     }
 
     private boolean loginValidation(String id, String password) {
-
-
-
         if (sharedPreferences.getString("ID", "").equals(id) && sharedPreferences.getString("PW", "").equals(password)) {
             // login success
             return true;
@@ -278,10 +271,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-
     private void lineLogin() {
         lineModule = new LineLogin(this, new OnResponseListener() {
-
             @Override
             public void onResult(SocialType socialType, ResultType resultType, Map<UserInfoType, String> map) {
 
@@ -291,14 +282,19 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private void twitterLogin() {
         twitterModule = new TwitterLogin(this, new OnResponseListener() {
-
             @Override
             public void onResult(SocialType socialType, ResultType resultType, Map<UserInfoType, String> map) {
-
             }
         });
     }
 
+    //
+    private UserInfoItem getUserInfoItem() {
+        UserInfoItem userInfoItem = new UserInfoItem();
+        userInfoItem.email = edtEmail.getText().toString();
+        userInfoItem.pw = edtPw.getText().toString();
+        return userInfoItem;
+    }
 
 
 }
