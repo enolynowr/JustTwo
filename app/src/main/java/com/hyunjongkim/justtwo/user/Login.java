@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -197,6 +196,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onResponse(Call<UserInfoItem> call, Response<UserInfoItem> response) {
 
+                //var useritem = UserItem();
+
                 userInfoItem = response.body();
 
                 ResUserInfo resUserInfo1 = userInfoItem.getResResults();
@@ -207,7 +208,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     ((MyApp) getApplication()).setResUserInfo(resUserInfo1);
 
                     resUserInfo1.getEmail();
-                    editor.putString("USER_ID", userInfoItem.getResResults().getUser_id());
+                    editor.putString("USER_ID", userInfoItem.getResResults().getUserId());
                     editor.commit();
 
                     GoLib.getInstance().goMainActivity(context);

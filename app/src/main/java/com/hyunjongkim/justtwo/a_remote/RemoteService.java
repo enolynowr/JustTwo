@@ -38,14 +38,18 @@ public interface RemoteService {
     @GET("/bang/info/{info_seq}")
     Call<RoomInfoItem> selectBangInfo(@Path("info_seq") int bangInfoSeq,
                                       @Query("user_seq") String _userEmail);
+
     // List for manage
     @GET("/manage/list/bang")
     Call<ArrayList<RoomInfoItem>> listManageInfoRoom(@Query("order_type") String orderType,
                                                      @Query("current_page") int currentPage);
+
     // List for main
-    @GET("/bang/list/main")
-    Call<ArrayList<RoomInfoItem>> listMain(@Query("order_type") String orderType,
-                                           @Query("current_page") int currentPage);
+    @GET("/rooms/getRoomListInfo")
+    Call<RoomInfoItem> listMain(
+            @Query("user_id") int userId,
+            @Query("status") int roomStatus,
+            @Query("current_page") int currentPage);
 
     // Insert info of bang
     @POST("/rooms/regRoomInfo")

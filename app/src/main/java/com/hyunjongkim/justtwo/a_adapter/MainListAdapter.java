@@ -11,23 +11,36 @@ import android.widget.TextView;
 
 import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
+import com.hyunjongkim.justtwo.a_item.ResRoomInfo;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 import com.hyunjongkim.justtwo.a_lib.GoLib;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHolder> {
 
     private final String TAG = this.getClass().getSimpleName();
     private Context context;
-    private ArrayList<RoomInfoItem> itemList;
+    //private ArrayList<RoomInfoItem> itemList;
+    private ArrayList<ResRoomInfo> itemList;
     private UserInfoItem userInfoItem;
     private int resource;
 
     //Constructor
+/*
     public MainListAdapter(Context context, int resource, ArrayList<RoomInfoItem> itemList) {
+        this.context = context;
+        this.resource = resource;
+        this.itemList = itemList;
+
+        userInfoItem = ((MyApp) context.getApplicationContext()).getUserInfoItem();
+    }
+*/
+
+    public MainListAdapter(Context context, int resource, ArrayList<ResRoomInfo> itemList) {
         this.context = context;
         this.resource = resource;
         this.itemList = itemList;
@@ -46,16 +59,17 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         int bangStatusNum = 0;
-        final RoomInfoItem item = itemList.get(position);
+        //final RoomInfoItem item = itemList.get(position);
+        final ResRoomInfo item = itemList.get(position);
         MyLog.d(TAG, "getView" + item);
-        holder.rowCategory.setText(item.category);
-        holder.rowDate.setText(item.dateTime);
-        holder.rowPlace.setText(item.location);
-        holder.rowDesc.setText(item.description);
+        holder.rowCategory.setText(item.getCategory());
+        holder.rowDate.setText(item.getDateTime());
+        holder.rowPlace.setText(item.getLocation());
+        holder.rowDesc.setText(item.getDescription());
 
         holder.btnRowRoomStatus.setText(" vacant");
 
-        switch (item.roomStatus) {
+        /*switch (item.roomStatus) {
             case 0:
                 holder.btnRowRoomStatus.setText("空部屋");
                 break;
@@ -63,7 +77,7 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
                 holder.btnRowRoomStatus.setText("満席");
                 holder.btnRowRoomStatus.setEnabled(false);
                 break;
-        }
+        }*/
 
         holder.btnRowRoomStatus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,11 +93,11 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
     }
 
     //
-    public void setItem(RoomInfoItem newItem) {
+    public void setItem(ResRoomInfo newItem) {
         for (int i = 0; i < itemList.size(); i++) {
-            RoomInfoItem item = itemList.get(i);
+            ResRoomInfo item = itemList.get(i);
 
-            if (item.roomInx == newItem.roomInx) {
+            if (item.getRoomId() == newItem.getRoomId()) {
                 itemList.set(i, newItem);
 
                 notifyItemRemoved(i);
@@ -94,7 +108,12 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
     }
 
     //
-    public void addItemList(ArrayList<RoomInfoItem> itemList) {
+/*    public void addItemList(ArrayList<RoomInfoItem> itemList) {
+        this.itemList.addAll(itemList);
+        notifyDataSetChanged();
+    }*/
+
+    public void addItemList(List<ResRoomInfo> itemList) {
         this.itemList.addAll(itemList);
         notifyDataSetChanged();
     }

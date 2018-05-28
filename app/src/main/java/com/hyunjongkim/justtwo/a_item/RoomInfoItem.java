@@ -2,6 +2,8 @@ package com.hyunjongkim.justtwo.a_item;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 @org.parceler.Parcel
 public class RoomInfoItem {
 
@@ -33,6 +35,17 @@ public class RoomInfoItem {
 
     @SerializedName("reg_date")
     public String regDate;
+
+    @SerializedName("result")
+    public List<ResRoomInfo> resRoomInfos;
+
+    public List<ResRoomInfo> getResRoomInfos() {
+        return resRoomInfos;
+    }
+
+    public void setResRoomInfos(List<ResRoomInfo> resRoomInfos) {
+        this.resRoomInfos = resRoomInfos;
+    }
 
     public String getResCd() {
         return resCd;

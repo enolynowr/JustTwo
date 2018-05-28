@@ -137,7 +137,7 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
 
         ;
         // User id
-        infoItem.setUserId(Integer.parseInt(((MyApp) context.getApplicationContext()).getResUserInfo().getUser_id()));
+        infoItem.setUserId(Integer.parseInt(((MyApp) context.getApplicationContext()).getResUserInfo().getUserId()));
         // User category
         infoItem.setCategory(spnCategory.getSelectedItem().toString());
         // Date and time

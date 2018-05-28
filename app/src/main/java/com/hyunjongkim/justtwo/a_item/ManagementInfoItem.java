@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 @org.parceler.Parcel
 public class ManagementInfoItem {
 
+
     @SerializedName("apply_inx")
     public int applyInx;
     @SerializedName("room_inx")

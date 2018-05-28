@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.hyunjongkim.justtwo.a_adapter.MainListAdapter;
 
 import com.hyunjongkim.justtwo.a_custom.EndlessRecyclerViewScrollListener;
+import com.hyunjongkim.justtwo.a_item.ResRoomInfo;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
@@ -27,6 +28,11 @@ import com.hyunjongkim.justtwo.a_remote.ServiceGenerator;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainList extends Fragment implements View.OnClickListener {
 
@@ -41,6 +47,9 @@ public class MainList extends Fragment implements View.OnClickListener {
     int listTypeValue = 2;
     String orderType;
 
+    List<ResRoomInfo> resRoomInfos;
+
+    int userId;
     //SPINNER
     Spinner spnOrder;
     Spinner spnFilterGen;
@@ -56,16 +65,16 @@ public class MainList extends Fragment implements View.OnClickListener {
     String userEmail;
 
 
-    public static MainList newInstance(UserInfoItem userInfoItem) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(USER_INFO_ITEM, Parcels.wrap(userInfoItem));
+    /* public static MainList newInstance(UserInfoItem userInfoItem) {
+         Bundle bundle = new Bundle();
+         bundle.putParcelable(USER_INFO_ITEM, Parcels.wrap(userInfoItem));
 
-        MainList mainList = new MainList();
-        mainList.setArguments(bundle);
+         MainList mainList = new MainList();
+         mainList.setArguments(bundle);
 
-        return mainList;
-    }
-
+         return mainList;
+     }
+ */
     public static MainList newInstance() {
         MainList mainList = new MainList();
         return mainList;
@@ -80,6 +89,7 @@ public class MainList extends Fragment implements View.OnClickListener {
 
         View layout = inflater.inflate(R.layout.main_list, container, false);
 
+        userId = Integer.parseInt(((MyApp) this.getActivity().getApplication()).getResUserInfo().getUserId());
         return layout;
     }
 
@@ -97,7 +107,8 @@ public class MainList extends Fragment implements View.OnClickListener {
 
         //
         orderType = Constant.ORDER_TYPE_METER;
-        listInfo(orderType, 0);
+        //todo listinfo에 userid 더함
+        listInfo(userId, orderType, 0);
 
     }
 
@@ -110,7 +121,7 @@ public class MainList extends Fragment implements View.OnClickListener {
         RoomInfoItem currentRoomInfoItem = myApp.getRoomInfoItem();
 
         if (infoListAdapter != null && currentRoomInfoItem != null) {
-            infoListAdapter.setItem(currentRoomInfoItem);
+            //infoListAdapter.setItem(currentRoomInfoItem);
             myApp.setRoomInfoItem(null);
         }
     }
@@ -132,20 +143,19 @@ public class MainList extends Fragment implements View.OnClickListener {
 
         setLayoutManager(listTypeValue);
 
-        infoListAdapter = new MainListAdapter(context, R.layout.row_main_list, new ArrayList<RoomInfoItem>());
+        infoListAdapter = new MainListAdapter(context, R.layout.row_main_list, new ArrayList<ResRoomInfo>());
         mainList.setAdapter(infoListAdapter);
 
         scrollListener = new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                listInfo(orderType, page);
+                listInfo(userId, orderType, page);
             }
         };
 
         mainList.addOnScrollListener(scrollListener);
 
     }
-
 
 
     // SPINNER
@@ -177,22 +187,52 @@ public class MainList extends Fragment implements View.OnClickListener {
     }
 
     // SERVER
-    private void listInfo(String orderType, final int currentPage) {
+    private void listInfo(int userId, String orderType, final int currentPage) {
 
-        RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
+        final RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
 
-        /* 0513
-        Call<ArrayList<RoomInfoItem>> call = remoteService.listMain(orderType, currentPage);
 
-        call.enqueue(new Callback<ArrayList<RoomInfoItem>>() {
+        Call<RoomInfoItem> call = remoteService.listMain(userId, 0, currentPage);
+
+        call.enqueue(new Callback<RoomInfoItem>() {
             @Override
-            public void onResponse(Call<ArrayList<RoomInfoItem>> call, Response<ArrayList<RoomInfoItem>> response) {
+            public void onResponse(Call<RoomInfoItem> call, Response<RoomInfoItem> response) {
 
-                ArrayList<RoomInfoItem> list = response.body();
-                MyLog.d(TAG, list.toString());
+                RoomInfoItem list = response.body();
+
+                //List<ResRoomInfo> resRoomInfo1 = new ArrayList<>();
+
+    /*            for (int i = 0; i < list.getResRoomInfos().size(); i++) {
+                    resRoomInfo1.add((ResRoomInfo) list.getResRoomInfos());
+                }*/
+
+
+                resRoomInfos = new ArrayList<>();
+                for (ResRoomInfo resRoomInfo1: list.getResRoomInfos()) {
+
+
+                    resRoomInfos.add(resRoomInfo1);
+
+                }
+
+
+                //MyLog.d(TAG, list.toString());
+
+              /*  for (int i=0; i < list.size(); i++){
+
+
+                }
+                for (RoomInfoItem roomInfo: list){
+
+                    ResRoomInfo resRoomInfos = new ResRoomInfo();
+
+                    resRoomInfos.setRoomId(list.get(0));
+
+                }*/
+
 
                 if (response.isSuccessful() && list != null) {
-                    infoListAdapter.addItemList(list);
+                    infoListAdapter.addItemList(resRoomInfos);
 
                     if (infoListAdapter.getItemCount() == 0) {
                         noDataText.setVisibility(View.VISIBLE);
@@ -203,31 +243,23 @@ public class MainList extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onFailure(Call<ArrayList<RoomInfoItem>> call, Throwable t) {
+            public void onFailure(Call<RoomInfoItem> call, Throwable t) {
                 MyLog.d(TAG, "No internet!!");
+
+                t.getStackTrace().toString();
             }
         });
-        */
-        // DUMMY DATA
-        ArrayList<RoomInfoItem> list = new ArrayList<>();
+    }
+
+   /* private RoomInfoItem getRoomItemForCallServer(){
 
         RoomInfoItem roomInfoItem = new RoomInfoItem();
-        roomInfoItem.category = "Lang";
-        roomInfoItem.location = "Tokyo";
-        roomInfoItem.dateTime = "2017/05/17";
-        roomInfoItem.description = "i m hot";
-        roomInfoItem.roomStatus = 0;
-        list.add(roomInfoItem);
 
+        roomInfoItem.setUserId(userId);
+        roomInfoItem.setRoomStatus(0);
+        roomInfoItem.
 
-        MyLog.d(TAG, list.toString());
-        infoListAdapter.addItemList(list);
-
-        if (infoListAdapter.getItemCount() == 0) {
-            noDataText.setVisibility(View.VISIBLE);
-        } else {
-            noDataText.setVisibility(View.GONE);
-        }
-    }
+        return roomInfoItem;
+    }*/
 
 }
