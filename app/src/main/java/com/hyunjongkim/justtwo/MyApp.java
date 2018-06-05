@@ -18,17 +18,12 @@ import com.hyunjongkim.justtwo.user.social_login.impl.SocialType;
  * 앱 전역에서 사용할 수 있는 클래스
  */
 public class MyApp extends Application {
+    // User info
     private UserInfoItem userInfoItem;
     private RoomInfoItem roomInfoItem;
     private ResUserInfo resUserInfo;
 
-    public ResUserInfo getResUserInfo() {
-        return resUserInfo;
-    }
 
-    public void setResUserInfo(ResUserInfo resUserInfo) {
-        this.resUserInfo = resUserInfo;
-    }
 
     private ManagementInfoItem managementInfoItem;
 
@@ -39,12 +34,20 @@ public class MyApp extends Application {
     public void onCreate() {
         super.onCreate();
         SocialLogin.init(getApplicationContext());
-
         // FileUriExposedException 문제를 해결하기 위한 코드
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         TypefaceProvider.registerDefaultIconSets();
         socialLoginInit();
+    }
+
+
+    public ResUserInfo getResUserInfo() {
+        return resUserInfo;
+    }
+
+    public void setResUserInfo(ResUserInfo resUserInfo) {
+        this.resUserInfo = resUserInfo;
     }
 
     public UserInfoItem getUserInfoItem() {
@@ -61,8 +64,6 @@ public class MyApp extends Application {
         this.userInfoItem = item;
     }
 
-
-
     public String getUserEmail() {
 
         return userInfoItem.email;
@@ -77,22 +78,16 @@ public class MyApp extends Application {
     }
 
     public void socialLoginInit() {
-
         // LINE
-
         LineConfig lineConfig = new LineConfig.Builder()
                 .setChannelId("1581878477")
                 .build();
         SocialLogin.addType(SocialType.LINE, lineConfig);
-
         // TWITTER
-
         TwitterConfig twitterConfig = new TwitterConfig.Builder()
                 .setConsumerKey("a8UIpD2q3h3HikhRQnohsrbSd")
                 .setConsumerSecret("oZvl24EFkLR4fz2aurGQomnwsPTd6455nbKxIOJGMkMHOGwxQ9")
                 .build();
         SocialLogin.addType(SocialType.TWITTER, twitterConfig);
     }
-
-
 }

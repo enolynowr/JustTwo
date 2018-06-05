@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
 import com.hyunjongkim.justtwo.a_item.ResRoomInfo;
+import com.hyunjongkim.justtwo.a_item.ResUserInfo;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 import com.hyunjongkim.justtwo.a_lib.GoLib;
@@ -27,25 +28,16 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
     //private ArrayList<RoomInfoItem> itemList;
     private ArrayList<ResRoomInfo> itemList;
     private UserInfoItem userInfoItem;
+    private ResUserInfo resUserInfo;
     private int resource;
 
     //Constructor
-/*
-    public MainListAdapter(Context context, int resource, ArrayList<RoomInfoItem> itemList) {
-        this.context = context;
-        this.resource = resource;
-        this.itemList = itemList;
-
-        userInfoItem = ((MyApp) context.getApplicationContext()).getUserInfoItem();
-    }
-*/
-
     public MainListAdapter(Context context, int resource, ArrayList<ResRoomInfo> itemList) {
         this.context = context;
         this.resource = resource;
         this.itemList = itemList;
 
-        userInfoItem = ((MyApp) context.getApplicationContext()).getUserInfoItem();
+        resUserInfo = ((MyApp) context.getApplicationContext()).getResUserInfo();
     }
 
     @NonNull
@@ -58,32 +50,28 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        int bangStatusNum = 0;
-        //final RoomInfoItem item = itemList.get(position);
-        final ResRoomInfo item = itemList.get(position);
-        MyLog.d(TAG, "getView" + item);
-        holder.rowCategory.setText(item.getCategory());
-        holder.rowDate.setText(item.getDateTime());
-        holder.rowPlace.setText(item.getLocation());
-        holder.rowDesc.setText(item.getDescription());
 
-        holder.btnRowRoomStatus.setText(" vacant");
+        final ResRoomInfo resRoomitem = itemList.get(position);
+        MyLog.d(TAG, "getView" + resRoomitem);
+        holder.rowCategory.setText(resRoomitem.getCategory());
+        holder.rowDate.setText(resRoomitem.getDateTime());
+        holder.rowPlace.setText(resRoomitem.getLocation());
+        holder.rowDesc.setText(resRoomitem.getDescription());
 
-        /*switch (item.roomStatus) {
+        switch (resRoomitem.getStatus()) {
             case 0:
-                holder.btnRowRoomStatus.setText("空部屋");
+                holder.btnRowRoomStatus.setText(R.string.main_list_room_status_vacant);
                 break;
             case 1:
-                holder.btnRowRoomStatus.setText("満席");
-                holder.btnRowRoomStatus.setEnabled(false);
+                holder.btnRowRoomStatus.setText(R.string.main_list_room_status_full);
                 break;
-        }*/
+            case 9:
+                holder.btnRowRoomStatus.setText(R.string.main_list_room_status_expired);
+                break;
+        }
 
-        holder.btnRowRoomStatus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GoLib.getInstance().goInfoBang(context);
-            }
+        holder.btnRowRoomStatus.setOnClickListener((View v) -> {
+            GoLib.getInstance().goInfoBang(context, resRoomitem.getRoomId(), resUserInfo.getUserId());
         });
     }
 
@@ -99,19 +87,11 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
 
             if (item.getRoomId() == newItem.getRoomId()) {
                 itemList.set(i, newItem);
-
                 notifyItemRemoved(i);
-
                 break;
             }
         }
     }
-
-    //
-/*    public void addItemList(ArrayList<RoomInfoItem> itemList) {
-        this.itemList.addAll(itemList);
-        notifyDataSetChanged();
-    }*/
 
     public void addItemList(List<ResRoomInfo> itemList) {
         this.itemList.addAll(itemList);

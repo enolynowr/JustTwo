@@ -18,6 +18,7 @@ import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 import com.hyunjongkim.justtwo.a_lib.GoLib;
+import com.hyunjongkim.justtwo.a_lib.MyLog;
 import com.hyunjongkim.justtwo.a_lib.MyToast;
 import com.hyunjongkim.justtwo.a_remote.RemoteService;
 import com.hyunjongkim.justtwo.a_remote.ServiceGenerator;
@@ -47,27 +48,25 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     EditText sexEdt;
     EditText ageEdt;
 
-    TextInputLayout tiEmail;
-    TextInputLayout tiPw;
-
     // 액티비티를 생성하고 화면을 구성한다.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up);
-
         context = this;
+
         currentItem = ((MyApp) getApplication()).getUserInfoItem();
 
         setToolbar();
         setView();
     }
 
+
     /**
-     * 右上のメニューを設定（転送）
+     * SETTING MENU
      *
-     * @param menu 메뉴 객체
-     * @return 메뉴를 보여준다면 true, 보여주지 않는다면 false
+     * @param menu INSTANCE OF MENU
+     * @return SHOWING MENU true, NOT false
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -76,9 +75,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     /**
-     * 왼쪽 화살표 메뉴(android.R.id.home)를 클릭했을 때와
-     * 오른쪽 상단 닫기 메뉴를 클릭했을 때의 동작을 지정한다.
-     * 여기서는 모든 버튼이 액티비티를 종료한다.
+     * SETTING PROCESSING FOR CLICKING SHAPE ARROW (android.R.id.home) AND SUMIT BUTTON OF MENU
      *
      * @param item 메뉴 아이템 객체
      * @return 메뉴를 처리했다면 true, 그렇지 않다면 false
@@ -89,16 +86,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             case android.R.id.home:
                 GoLib.getInstance().goLoginActivity(context);
                 break;
-
             case R.id.action_submit:
                 //showDialog();
                 boolean result = checkEditTextInput(emailEdt, pwEdt, sexEdt, ageEdt);
 
                 if (result) {
                     save();
-
                 } else {
-
                     emailEdt.requestFocus();
                 }
 
@@ -113,20 +107,16 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     public void onBackPressed() {
         finish();
     }
-
     @Override
     public void onClick(View v) {
     }
-
 
 /////////////////////// FUNCTION
 
     // 액티비티 툴바를 설정한다.
     private void setToolbar() {
         final Toolbar toolbar = findViewById(R.id.toolbar);
-
         setSupportActionBar(toolbar);
-
         final ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
@@ -137,7 +127,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     // 액티비티 화면을 설정한다.
     private void setView() {
-
         emailEdt = findViewById(R.id.edt_email);
         pwEdt = findViewById(R.id.edt_password);
 
@@ -181,14 +170,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     // 歳 Dialog
     private void setAgeTypeDialog() {
         String[] arrAge = getResources().getStringArray(R.array.age_array);
-        int[] arrAgeInt = getResources().getIntArray(R.array.age_int_array);
-        int[] arrDB = new int[1];
         final String[] ageTypes = new String[arrAge.length];
 
         for (int i = 0; i < arrAge.length; i++) {
             ageTypes[i] = arrAge[i];
         }
-        // ageTypes[0] = getResources().getStringArray(R.array.age_array);
 
         new AlertDialog.Builder(this)
                 .setItems(ageTypes, new DialogInterface.OnClickListener() {
@@ -203,66 +189,62 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 }).show();
     }
 
-
     /**
      * 사용자가 입력한 정보를 MemberInfoItem 객체에 저장해서 반환한다.
      *
      * @return 사용자 정보 객체
      */
     private UserInfoItem getUserInfoItem() {
-
         UserInfoItem newUserInfoItem = new UserInfoItem();
-
-        newUserInfoItem.email = emailEdt.getText().toString();
-        newUserInfoItem.pw = pwEdt.getText().toString();
+        newUserInfoItem.setEmail(emailEdt.getText().toString());
+        newUserInfoItem.setPw(pwEdt.getText().toString());
 
         switch (selectedUserSex) {
             case 0:
-                newUserInfoItem.gender = "E";
+                newUserInfoItem.setGender("E");
                 break;
             case 1:
-                newUserInfoItem.gender = "M";
+                newUserInfoItem.setGender("M");
                 break;
             case 2:
-                newUserInfoItem.gender = "W";
+                newUserInfoItem.setGender("W");
                 break;
             default:
-                newUserInfoItem.gender = "E";
+                newUserInfoItem.setGender("E");
                 break;
         }
 
         switch (selectedUserAge) {
             case 0:
-                newUserInfoItem.age = 0;
+                newUserInfoItem.setAge(0);
                 break;
             case 1:
-                newUserInfoItem.age = 10;
+                newUserInfoItem.setAge(10);
                 break;
             case 2:
-                newUserInfoItem.age = 20;
+                newUserInfoItem.setAge(20);
                 break;
             case 3:
-                newUserInfoItem.age = 30;
+                newUserInfoItem.setAge(30);
                 break;
             case 4:
-                newUserInfoItem.age = 40;
+                newUserInfoItem.setAge(40);
                 break;
             case 5:
-                newUserInfoItem.age = 50;
+                newUserInfoItem.setAge(50);
                 break;
             case 6:
-                newUserInfoItem.age = 60;
+                newUserInfoItem.setAge(60);
                 break;
             case 7:
-                newUserInfoItem.age = 70;
+                newUserInfoItem.setAge(70);
                 break;
-
             default:
-                newUserInfoItem.age = 0;
+                newUserInfoItem.setAge(0);
                 break;
         }
 
-        newUserInfoItem.userStatus = 0;
+        newUserInfoItem.setUserStatus(0);
 
         return newUserInfoItem;
     }
@@ -270,96 +252,59 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     // Check Input Value
     private boolean checkEditTextInput(EditText _email, EditText _pw, EditText _sex, EditText _age) {
 
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(_email.getText().toString()).matches() || _email.getText().toString() == "") {
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(_email.getText().toString()).matches()) {
+
+            if ( _email.getText().toString().equals("")){
+                MyToast.l(SignUpActivity.this, "emailを入力してください。");
+                _email.requestFocus();
+                return false;
+            }
+
+            MyToast.l(SignUpActivity.this, "emailの形式正しくありません。");
             _email.requestFocus();
             return false;
         }
 
         if (!Pattern.matches("^[a-zA-Z0-9!@.#$%^&*?_~]{4,16}$", _pw.getText().toString())) {
             _pw.requestFocus();
-            Toast.makeText(SignUpActivity.this, "パスワードを確認してください。", Toast.LENGTH_SHORT).show();
+            MyToast.l(SignUpActivity.this, "パスワードを確認してください。");
             return false;
         }
 
-        if (_sex.getText().toString() == "") {
-            Toast.makeText(SignUpActivity.this, "性別を選択してください。", Toast.LENGTH_SHORT).show();
+        if (_sex.getText().toString().equals("")) {
+            MyToast.l(SignUpActivity.this, "性別を選択してください。");
             return false;
         }
 
-        if (_age.getText().toString() == "") {
-            Toast.makeText(SignUpActivity.this, "歳を選択してください。", Toast.LENGTH_SHORT).show();
+        if (_age.getText().toString().equals("")) {
+            MyToast.l(SignUpActivity.this, "歳を選択してください。");
             return false;
         }
 
         return true;
     }
 
-    // DIALOG
-    private void showDialog() {
-
-        final EditText edittext = new EditText(this);
-
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-        builder.setTitle(getResources().getString(R.string.dialog_title));
-        builder.setView(edittext);
-
-        // POSITIVE
-        builder.setPositiveButton(getResources().getString(R.string.dialog_yes),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplicationContext(), edittext.getText().toString(), Toast.LENGTH_LONG).show();
-                    }
-                });
-        //NEGATIVE
-        builder.setNegativeButton(getResources().getString(R.string.dialog_no),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-        builder.show();
-    }
-
-
     // ユーザが入力した情報を保存する。
     private void save() {
-
         UserInfoItem userInfoItem = getUserInfoItem();
-        //MyLog.d(TAG, "insertItem " + newItem.toString());
-
+        MyLog.d(TAG, "insertItem " + userInfoItem.toString());
         RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
 
         Call<UserInfoItem> call = remoteService.insertUserInfo(userInfoItem);
         call.enqueue(new Callback<UserInfoItem>() {
             @Override
             public void onResponse(Call<UserInfoItem> call, Response<UserInfoItem> response) {
-
-                //ResUserInfo resResult = response.body();
-                response.body().toString();
-                // resResult.getResCd();
-                UserInfoItem userInfoItem1 = response.body();
-
-                //Log.d(">>>>>>>>>>>>>>ssss",  userInfoItem1.getResCd() );
-                userInfoItem1.getResCd();
+                UserInfoItem userInfoItem = response.body();
 
                 try {
-                    //currentItem.email = email;
-
-                    if (userInfoItem1.getResCd().equals("0000")) {
+                    if (userInfoItem.getResCd().equals("0000")) {
                         GoLib.getInstance().goLoginActivity(context);
-                        MyToast.s(context, "WELCOM!!!!!!!!!!!!!!!!");
-
                     }
 
                 } catch (Exception e) {
                     e.printStackTrace();
                     return;
                 }
-
-                /*currentItem.email = newItem.email;
-                currentItem.pw = newItem.pw;
-                currentItem.gender = newItem.gender;
-                currentItem.age = newItem.age;*/
 
                 finish();
             }
@@ -373,6 +318,4 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
     }
-
-
 }

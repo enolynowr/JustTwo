@@ -19,7 +19,7 @@
     <string name="save">保存</string>
     <string name="submit">転送</string>
     <string name="req">申請</string>
-    <string name="open_date">開設日</string>
+    <string name="open_date">約束日時</string>
     <string name="open_time">開始時</string>
     <string name="click_me">날래 누르라우!!</string>
     <string name="auto_login">Auto Login</string>
@@ -28,6 +28,7 @@
     <string name="dialog_no">CLOSE</string>
     <string name="nav_home">HOME</string>
     <string name="option">OPTION</string>
+    <string name="dialog_title_submit"></string>
     <string name="dialog_title">나를 선택해야 하는 이유</string>
     <string name="network_not_working">네크워크에 연결되어 있지 않습니다.\n확인후 다시 실행해주세요.</string>
 
@@ -54,6 +55,9 @@
     <string name="disapprove">不許可</string>
     <string name="expired_room_date">期間満了</string>
     <string name="host_place">住所</string>
+    <string name="main_list_room_status_vacant">空部屋</string>
+    <string name="main_list_room_status_full">満席</string>
+    <string name="main_list_room_status_expired">募集期間満了</string>
 
     <!-- Manage -->
     <string name="nav_manage_room">部屋管理</string>

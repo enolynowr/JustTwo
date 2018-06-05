@@ -1,6 +1,8 @@
 package com.hyunjongkim.justtwo.a_remote;
 
-import com.hyunjongkim.justtwo.a_item.ResUserInfo;
+import com.hyunjongkim.justtwo.a_item.ReqGetRoomDetailInfoItem;
+import com.hyunjongkim.justtwo.a_item.ResRegApplyInfo;
+import com.hyunjongkim.justtwo.a_item.ResGetRoomInfoDetailItem;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 
@@ -20,24 +22,19 @@ public interface RemoteService {
     String starbarUrl = "http://10.4.164.210:3000";
     String BASE_URL = awsUrl;
 
-/// USER
-
+    //USER
     // Select Info of User
     @POST("/users/getUserInfo")
     Call<UserInfoItem> selectUserInfo(@Body UserInfoItem userInfoItem);
 
-    // POST
     // Register User
     @POST("/users/regUserInfo")
     Call<UserInfoItem> insertUserInfo(@Body UserInfoItem userInfoItem);
 
-
-/// ROOM
-
+    // ROOM
     // Info of bang
     @GET("/bang/info/{info_seq}")
-    Call<RoomInfoItem> selectBangInfo(@Path("info_seq") int bangInfoSeq,
-                                      @Query("user_seq") String _userEmail);
+    Call<RoomInfoItem> selectBangInfo(@Path("info_seq") int bangInfoSeq);
 
     // List for manage
     @GET("/manage/list/bang")
@@ -46,12 +43,21 @@ public interface RemoteService {
 
     // List for main
     @GET("/rooms/getRoomListInfo")
-    Call<RoomInfoItem> listMain(
-            @Query("user_id") int userId,
-            @Query("status") int roomStatus,
-            @Query("current_page") int currentPage);
+    Call<RoomInfoItem> listMain( @Query("user_id") int userId,
+                                 @Query("status") int roomStatus,
+                                 @Query("current_page") int currentPage);
 
     // Insert info of bang
     @POST("/rooms/regRoomInfo")
     Call<RoomInfoItem> regiRoomInfo(@Body RoomInfoItem infoItem);
+
+    //Room info detail
+    @POST("/rooms/getRoomDetailInfo")
+    Call<ResGetRoomInfoDetailItem> getRoomInfoDetail(@Body ReqGetRoomDetailInfoItem reqGetRoomDetailInfoItem);
+
+    //APPLY
+    // Request joining to the room
+    @POST("/applys/regApplyInfo")
+    Call<ResRegApplyInfo> insertApplingRoomInfo(@Body ReqGetRoomDetailInfoItem reqGetRoomDetailInfoItem );
+
 }

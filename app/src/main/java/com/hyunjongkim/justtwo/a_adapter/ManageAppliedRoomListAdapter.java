@@ -45,6 +45,7 @@ public class ManageAppliedRoomListAdapter extends RecyclerView.Adapter<ManageApp
             if (item.roomInx == newItem.roomInx) {
                 roomItemList.set(i, newItem);
 
+
                 notifyItemRemoved(i);
 
                 break;
@@ -102,7 +103,7 @@ public class ManageAppliedRoomListAdapter extends RecyclerView.Adapter<ManageApp
         holder.rowAppliedRoomStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GoLib.getInstance().goInfoBang(context);
+                //GoLib.getInstance().goInfoBang(context);
             }
         });
     }

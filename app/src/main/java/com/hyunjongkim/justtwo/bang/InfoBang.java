@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,9 @@ import android.widget.Toast;
 
 import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
+import com.hyunjongkim.justtwo.a_item.ReqGetRoomDetailInfoItem;
+import com.hyunjongkim.justtwo.a_item.ResGetRoomInfoDetailItem;
+import com.hyunjongkim.justtwo.a_item.ResRoomInfo;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 import com.hyunjongkim.justtwo.a_lib.GoLib;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
@@ -38,33 +42,47 @@ import retrofit2.Response;
  */
 public class InfoBang extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
-    private final String TAG = this.getClass().getSimpleName();
-    public static final String INFO_SEQ = "INFO_SEQ";
-    DrawerLayout drawer;
-    Context context;
-    RoomInfoItem item;
-    String userEmail;
-    int bangInfoSeq;
+    public static final String ROOM_ID = "ROOM_ID";
+    public static final String USER_ID = "USER_ID";
 
     // VIEW
     View loadingText;
     View headerLayout;
     ScrollView scrollView;
+    DrawerLayout drawer;
+    Context context;
+    ResRoomInfo resRoomInfo;
+    RoomInfoItem item;
+    ReqGetRoomDetailInfoItem reqGetRoomDetailInfoItem;
+    ResGetRoomInfoDetailItem resGetRoomDetailInfoItem;
+
+    private final String TAG = this.getClass().getSimpleName();
+    String userEmail;
+    int roomId;
+    int userId;
 
     //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bang_info);
+        reqGetRoomDetailInfoItem = new ReqGetRoomDetailInfoItem();
 
         context = this;
         drawer = findViewById(R.id.drawer_layout);
 //        loadingText = findViewById(R.id.a_loading_layout);
 
         userEmail = ((MyApp) getApplication()).getUserEmail();
-        bangInfoSeq = getIntent().getIntExtra(INFO_SEQ, 1);
-        //selectBangInfo(bangInfoSeq, userEmail);
+        roomId = getIntent().getIntExtra(ROOM_ID, 0);
+        userId = getIntent().getIntExtra(USER_ID, 0);
 
+       /* resRoomInfoDetail.setRoomId(roomId);
+        resRoomInfoDetail.setUserId(userId);*/
+        reqGetRoomDetailInfoItem.setRoomId(roomId);
+        reqGetRoomDetailInfoItem.setUserId(userId);
+
+        //selectBangInfo(resRoomInfoDetail);
+        selectBangInfo(reqGetRoomDetailInfoItem);
         setToolbar();
         //setView();
     }
@@ -149,14 +167,17 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
     private void setView() {
         //getSupportActionBar().setTitle(item.category);
 
-        TextView categoryText = findViewById(R.id.bang_info_category);
+        TextView category = findViewById(R.id.bang_info_category);
         TextView hostDate = findViewById(R.id.bang_info_date);
-        TextView hostTime = findViewById(R.id.bang_info_time);
+
         TextView hostPlace = findViewById(R.id.bang_info_place);
         TextView description = findViewById(R.id.bang_info_contents);
         TextView appliedCnt = findViewById(R.id.show_applied_cnt);
 
-        categoryText.setText(item.category);
+        category.setText(resGetRoomDetailInfoItem.getResGetRoomDetailInfoItemResult().getCategory());
+        hostDate.setText(resGetRoomDetailInfoItem.getResGetRoomDetailInfoItemResult().getDateTime());
+        hostPlace.setText(resGetRoomDetailInfoItem.getResGetRoomDetailInfoItemResult().getLocation());
+        description.setText(resGetRoomDetailInfoItem.getResGetRoomDetailInfoItemResult().getDescription());
 
 /*
         if (!StringLib.getInstance().isBlank(item.hostDate)) {
@@ -172,43 +193,36 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
         }
 */
 
-        if (!StringLib.getInstance().isBlank(item.location)) {
-            hostPlace.setText(item.location);
-        } else {
-            hostPlace.setVisibility(View.GONE);
-        }
-
-        if (!StringLib.getInstance().isBlank(item.description)) {
-            description.setText(item.description);
-        } else {
-            description.setText(R.string.no_text);
-        }
     }
 
 
     // SERVER
     // Check the info of room :: @param memberSeq 사용자 시퀀스
-    private void selectBangInfo(int bangInfoSeq, String _userEmail) {
+    private void selectBangInfo(ReqGetRoomDetailInfoItem _reqGetRoomDetailInfoItem) {
         RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
-        Call<RoomInfoItem> call = remoteService.selectBangInfo(bangInfoSeq, _userEmail);
+        Call<ResGetRoomInfoDetailItem> call = remoteService.getRoomInfoDetail(_reqGetRoomDetailInfoItem);
 
-        call.enqueue(new Callback<RoomInfoItem>() {
+        call.enqueue(new Callback<ResGetRoomInfoDetailItem>() {
             @Override
-            public void onResponse(Call<RoomInfoItem> call, Response<RoomInfoItem> response) {
-                RoomInfoItem infoItem = response.body();
+            public void onResponse(Call<ResGetRoomInfoDetailItem> call, Response<ResGetRoomInfoDetailItem> response) {
+                resGetRoomDetailInfoItem = response.body();
 
-                if (response.isSuccessful() && infoItem != null && infoItem.roomInx > 0) {
-                    item = infoItem;
-                    //setView();
-                    loadingText.setVisibility(View.GONE);
+                Log.d("로그당 : ", "resGetRoomDetailInfoItem : " + resGetRoomDetailInfoItem.toString());
+
+
+                if (response.isSuccessful() && resGetRoomDetailInfoItem != null && resGetRoomDetailInfoItem.getResGetRoomDetailInfoItemResult().getRoomId() > 0) {
+
+                    setView();
+                    // loadingText.setVisibility(View.GONE);
                 } else {
                     // loadingText.setVisibility(View.VISIBLE);
-                   // ((TextView) findViewById(R.id.loading_text)).setText(R.string.loading_not);
+                    // ((TextView) findViewById(R.id.loading_text)).setText(R.string.loading_not);
                 }
+
             }
 
             @Override
-            public void onFailure(Call<RoomInfoItem> call, Throwable t) {
+            public void onFailure(Call<ResGetRoomInfoDetailItem> call, Throwable t) {
                 MyLog.d(TAG, "no internet connectivity");
                 MyLog.d(TAG, t.toString());
             }
@@ -235,13 +249,20 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
         builder.setTitle("AlertDialog Title");
         builder.setMessage("AlertDialog Content");
         builder.setView(edittext);
-        builder.setPositiveButton("입력",
+        builder.setPositiveButton("SEND",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplicationContext(), edittext.getText().toString(), Toast.LENGTH_LONG).show();
+
+
+                        /*
+                         * todo
+                         *  roomId, userId를 메인리스트로 가기전에 call api(참가신청요청)
+                         *
+                         * */
+
                     }
                 });
-        builder.setNegativeButton("취소",
+        builder.setNegativeButton("CANCEL",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 

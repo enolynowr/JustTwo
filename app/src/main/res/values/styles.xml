@@ -32,10 +32,21 @@
        <item name="android:gravity">center_vertical|right</item>
     </style>
 
+    <style name="horiLineMadeForTv">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/white_1_1</item>
+    </style>
+
+    <!--to do-->
+    <style name="roomInfoDetailTv">
+        <item name="android:layout_span"></item>
+        
+    </style>
 
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_margin="@dimen/spacing_small"
     android:background="@drawable/bg_round"
-    android:gravity="center_vertical|right"
+    android:textColor="@color/primaryColorDark"
 </resources>

@@ -77,7 +77,6 @@ public class PermissionActivity extends AppCompatActivity {
 
     /**
      * RECEIVE RESULT OF APPLING PERMISSION
-     *
      * @param requestCode  요청 코드
      * @param permissions  권한 종류
      * @param grantResults 권한 결과

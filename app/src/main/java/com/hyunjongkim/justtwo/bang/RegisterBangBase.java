@@ -50,21 +50,18 @@ public class RegisterBangBase extends AppCompatActivity {
                 R.id.content_main, RegisterBangInput.newInstance(infoItem));
     }
 
-    // RIGHT UP MENU
+    // Setting Menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_close, menu);
         return true;
     }
 
-    // PROCESSING CLICKING OF RIGHT UP MENU
+    // Process Clicking Menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
-                break;
-            case R.id.action_close:
                 finish();
                 break;
         }
@@ -89,9 +86,7 @@ public class RegisterBangBase extends AppCompatActivity {
     // SETTING TOOL BAR
     private void setToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
-
         setSupportActionBar(toolbar);
-
         ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
@@ -99,7 +94,4 @@ public class RegisterBangBase extends AppCompatActivity {
             actionBar.setTitle(R.string.register_bang);
         }
     }
-
-
-
 }

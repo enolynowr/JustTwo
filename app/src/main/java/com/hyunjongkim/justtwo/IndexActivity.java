@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.hyunjongkim.justtwo.a_item.ResUserInfo;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 import com.hyunjongkim.justtwo.a_lib.GoLib;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
@@ -31,6 +32,8 @@ import retrofit2.Response;
 public class IndexActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
     Context context;
+    UserInfoItem userInfoItem;
+    UserInfoItem userInfoItemForshared;
 
     // IF ISN'T CONNECTING TO INTERNET THEN CALL showNoService()
     @Override
@@ -80,50 +83,42 @@ public class IndexActivity extends AppCompatActivity {
         // IF NOT AUTO LOGIN, GO TO LOGIN
         if (shared.getBoolean("Auto_Login_enabled", false) == false) {
             GoLib.getInstance().goLoginActivity(this);
-
             return;
-
         } else {
-
-            shared.getString("USER_ID", "");
-            UserInfoItem userInfoItemForshared = new UserInfoItem();
+            callProcessUserInfo();
+            userInfoItemForshared = new UserInfoItem();
 
             userInfoItemForshared.setEmail(shared.getString("USER_EMAIL", ""));
             userInfoItemForshared.setPw(shared.getString("USER_PW", ""));
-            userInfoItemForshared.setUserId(Integer.parseInt(shared.getString("USER_ID", "")));
+            //userInfoItemForshared.setUserId(shared.getInt("USER_ID", 0));
 
-            // CALL SERVER
+            //
             ((MyApp) getApplication()).setUserInfoItem(userInfoItemForshared);
             GoLib.getInstance().goMainActivity(getApplicationContext());
             return;
         }
-
-
     }
 
-    public void selectUserInfo(UserInfoItem userInfoItem) {
-        RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
+    public void callProcessUserInfo() {
 
 
-        Call<UserInfoItem> call = remoteService.selectUserInfo(userInfoItem);
+        final RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
 
+        Call<UserInfoItem> call = remoteService.selectUserInfo(userInfoItemForshared);
         call.enqueue(new Callback<UserInfoItem>() {
             @Override
             public void onResponse(Call<UserInfoItem> call, Response<UserInfoItem> response) {
-                UserInfoItem item = response.body();
+                userInfoItem = response.body();
+                ResUserInfo resUserInfo1 = userInfoItem.getResResults();
 
-                if (response.isSuccessful() && item.getResCd().equals("0000")) {
-
+                if (response.isSuccessful() && userInfoItem.getResCd().equals("0000")) {
                     MyLog.d(TAG, "success " + response.body().toString());
-
-                    ((MyApp) getApplication()).setUserInfoItem(item);
-
-                    MyLog.d(TAG, "MYAPP_USERID " + ((MyApp) getApplication()).getUserInfoItem().getUserId());
-                    GoLib.getInstance().goMainActivity(getApplicationContext());
-
+                    // Save resUserInfo
+                    //setAutoLogin();
+                    ((MyApp) getApplication()).setResUserInfo(resUserInfo1);
+                    GoLib.getInstance().goMainActivity(context);
                 } else {
                     MyLog.d(TAG, "not success");
-
                 }
             }
 
@@ -134,17 +129,6 @@ public class IndexActivity extends AppCompatActivity {
             }
         });
     }
-
-    /**
-     * SAVE GETTING USER INFO ITEM TO INSTANCE Application
-     * AND CALLING startMain()
-     */
-
- /*   private void setMemberInfoItem(UserInfoItem item) {
-        //((MyApp) getApplicationContext()).setMemberInfoItem(item);
-        //startMain();
-    }*/
-
 
 }
 

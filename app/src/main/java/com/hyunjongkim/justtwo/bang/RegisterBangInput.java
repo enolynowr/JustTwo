@@ -24,6 +24,7 @@ import com.hyunjongkim.justtwo.a_remote.ServiceGenerator;
 
 import org.parceler.Parcels;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,29 +40,22 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
     Context context;
     RoomInfoItem infoItem;
     Address address;
-
     // View 관련
-
-
     Spinner spnCategory;
     ArrayAdapter<String> adapter;
     String[] spnData;
-
     EditText descriptionEdit;
-
     TextView dateTv;
     TextView timeTv;
     TextView adrTv;
-
     Button btnSaveBangInfo;
 
-    //MAKE INSTANCE RegisterBangInput IN ROOMINFOITEM
+    //MAKE INSTANCE RegisterBangInput
     public static RegisterBangInput newInstance(RoomInfoItem infoItem) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(INFO_ITEM, Parcels.wrap(infoItem));
         RegisterBangInput fragment = new RegisterBangInput();
         fragment.setArguments(bundle);
-
         return fragment;
     }
 
@@ -76,7 +70,7 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-
+            // UNWRAP
             infoItem = Parcels.unwrap(getArguments().getParcelable(INFO_ITEM));
 
             if (infoItem.roomInx != 0) {
@@ -91,7 +85,6 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = this.getActivity();
-
         // CATEGORY
         spnData = getResources().getStringArray(R.array.bang_category);
         adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, spnData);
@@ -134,14 +127,13 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
     // PROCESSING CLICKING
     @Override
     public void onClick(View v) {
-
-        ;
         // User id
-        infoItem.setUserId(Integer.parseInt(((MyApp) context.getApplicationContext()).getResUserInfo().getUserId()));
+        infoItem.setUserId((((MyApp) context.getApplicationContext()).getResUserInfo().getUserId()));
         // User category
         infoItem.setCategory(spnCategory.getSelectedItem().toString());
         // Date and time
-        String dateAndTime = dateTv.getText().toString() + " "+ timeTv.getText().toString();
+        //String dateAndTime = dateTv.getText().toString() + " "+ timeTv.getText().toString();
+        String dateAndTime = modifyDateAndTime();
         infoItem.setDateTime(dateAndTime);
         // Location
         infoItem.setLocation(adrTv.getText().toString());
@@ -150,20 +142,18 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
 
         MyLog.d(TAG, "onClick imageItem " + infoItem);
 
+        DialogLib dialogLib = new DialogLib();
+
         if (v.getId() == R.id.register_bang_date) {
-            DialogLib dialogLib = new DialogLib();
             dialogLib.setDatePicker(getContext(), dateTv);
         }
 
         if (v.getId() == R.id.register_bang_time) {
-            DialogLib dialogLib = new DialogLib();
             dialogLib.setTimePicker(getContext(), timeTv);
         }
 
-        if (v.getId() == R.id.btn_room_info_save){
-
+        if (v.getId() == R.id.btn_room_info_save) {
             regiRoomInfo(infoItem);
-
         }
     }
 /////////////////////// FUNCTION
@@ -195,12 +185,10 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
 
     // Save the info of room to the Server.
     private void regiRoomInfo(RoomInfoItem roomInfoItem) {
-
         MyLog.d(TAG, roomInfoItem.toString());
         RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
-        Call<RoomInfoItem> call = remoteService.regiRoomInfo(roomInfoItem);
 
-        //
+        Call<RoomInfoItem> call = remoteService.regiRoomInfo(roomInfoItem);
         call.enqueue(new Callback<RoomInfoItem>() {
             @Override
             public void onResponse(Call<RoomInfoItem> call, Response<RoomInfoItem> response) {
@@ -209,13 +197,13 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
 
                 if (response.isSuccessful() && roomInfoItem.getResCd().equals("0000")) {
 
-                    MyLog.d(TAG, "SUCEESS " + roomInfoItem.getResCd().toString());
+                    MyLog.d(TAG, "<<SUCCESS>>" + roomInfoItem.getResCd().toString());
                     GoLib.getInstance().goMainActivity(context);
 
                 } else { // 등록 실패
-                   /* int statusCode = response.code();
+                    int statusCode = response.code();
                     ResponseBody errorBody = response.errorBody();
-                    MyLog.d(TAG, "fail " + statusCode + errorBody.toString());*/
+                    MyLog.d(TAG, "<<FAIL>>" + statusCode + errorBody.toString());
                 }
             }
 
@@ -224,6 +212,20 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
                 MyLog.d(TAG, "no internet connectivity");
             }
         });
+    }
+
+    private String modifyDateAndTime() {
+
+
+        String date = dateTv.getText().toString();
+
+        date.replaceAll("\\p{InCJKUnifiedIdeographs}", "-");
+
+        String time = timeTv.getText().toString();
+        time.replaceAll("\\p{InCJKUnifiedIdeographs}", ":");
+
+        return date + " " + time;
+
     }
 
 }

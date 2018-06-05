@@ -28,7 +28,7 @@
                 android:id="@+id/btn_row_manage_apply_status"
                 android:layout_width="match_parent"
                 android:layout_height="51dp"
-                android:text="승인" />
+                android:text="" />
         </LinearLayout>
 
         <!-- MAIN CONTENTS-->

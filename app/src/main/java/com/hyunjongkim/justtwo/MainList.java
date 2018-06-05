@@ -89,7 +89,9 @@ public class MainList extends Fragment implements View.OnClickListener {
 
         View layout = inflater.inflate(R.layout.main_list, container, false);
 
-        userId = Integer.parseInt(((MyApp) this.getActivity().getApplication()).getResUserInfo().getUserId());
+        //userId = ((MyApp) this.getActivity().getApplication()).getResUserInfo().getUserId();
+        userId = 15;
+
         return layout;
     }
 
@@ -179,6 +181,7 @@ public class MainList extends Fragment implements View.OnClickListener {
         spnAdpOd = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, spnOd);
         spnOrder.setAdapter(spnAdpOd);
 
+
         //GENDER
         spnFilterGen = getActivity().findViewById(R.id.spn_main_list_filter_sex);
         arrFilterGen = getResources().getStringArray(R.array.filter_gender);
@@ -192,7 +195,7 @@ public class MainList extends Fragment implements View.OnClickListener {
         final RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
 
 
-        Call<RoomInfoItem> call = remoteService.listMain(userId, 0, currentPage);
+        Call<RoomInfoItem> call = remoteService.listMain(userId, 1, currentPage);
 
         call.enqueue(new Callback<RoomInfoItem>() {
             @Override

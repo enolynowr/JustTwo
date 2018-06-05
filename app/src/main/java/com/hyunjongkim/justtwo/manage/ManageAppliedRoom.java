@@ -141,6 +141,8 @@ public class ManageAppliedRoom extends Fragment implements View.OnClickListener 
                 MyLog.d(TAG, "No internet!!");
             }
         });*/
+
+
         ArrayList<RoomInfoItem> listRoomInfoItem = new ArrayList<>();
         RoomInfoItem roomInfoItem = new RoomInfoItem();
 

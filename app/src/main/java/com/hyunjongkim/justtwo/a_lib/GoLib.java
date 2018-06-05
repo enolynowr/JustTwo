@@ -81,16 +81,6 @@ public class GoLib {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
-    /**
-     * 맛집 정보 액티비티를 실행한다.
-     * @param context 컨텍스트
-     * @param infoSeq 맛집 정보 일련번호
-     */
-    /*public void goBestFoodInfoActivity(Context context, int infoSeq) {
-        Intent intent = new Intent(context, BestFoodInfoActivity.class);
-        intent.putExtra(BestFoodInfoActivity.INFO_SEQ, infoSeq);
-        context.startActivity(intent);
-    }*/
 
     public void goManagementActivity(Context context) {
         Intent intent = new Intent(context,Management.class);
@@ -98,9 +88,11 @@ public class GoLib {
         context.startActivity(intent);
     }
 
-    public void goInfoBang(Context context) {
+    public void goInfoBang(Context context, int roomId, int userId) {
         Intent intent = new Intent(context,InfoBang.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(InfoBang.ROOM_ID, roomId);
+        intent.putExtra(InfoBang.USER_ID, userId);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

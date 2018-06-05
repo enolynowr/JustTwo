@@ -24,6 +24,7 @@ import com.hyunjongkim.justtwo.a_item.ResUserInfo;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 import com.hyunjongkim.justtwo.a_lib.GoLib;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
+import com.hyunjongkim.justtwo.a_lib.MyToast;
 import com.hyunjongkim.justtwo.a_remote.RemoteService;
 import com.hyunjongkim.justtwo.a_remote.ServiceGenerator;
 import com.hyunjongkim.justtwo.user.social_login.LineLogin;
@@ -83,7 +84,20 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 valEdtPw = edtPw.getText().toString();
                 valEdtEmail = edtEmail.getText().toString();
 
+                if (sharedPreferences.getBoolean("Auto_Login_enabled", false)){
+
+                    String EMAIL = edtEmail.getText().toString();
+                    String PW = edtPw.getText().toString();
+                    editor.putString("USER_EMAIL", EMAIL);
+                    editor.putString("USER_PW", PW);
+                    //editor.putInt("USER_ID", )
+
+                    editor.commit();
+                }
+
+                checkLoginInput();
                 callProcessUserInfo();
+                setAutoLogin();
                 break;
             case R.id.auto_login:
                 break;
@@ -94,13 +108,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 twitterModule.onLogin();
                 break;
         }
-
     }
 
     /**
      * 右上のメニューを設定（転送）
      *
-     * @return SHOW MENU true, DON'T SHOW MENU false
+     *  @return SHOW MENU true, DON'T SHOW MENU false
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -135,10 +148,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     // SETTING TOOL BAR
     private void setToolbar() {
-        final Toolbar toolbar = findViewById(R.id.toolbar);
-
+        final Toolbar toolbar = findViewById(R.id.toolbar );
         setSupportActionBar(toolbar);
-
         final ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
@@ -164,55 +175,48 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private boolean checkLoginInput() {
 
         if (!android.util.Patterns.EMAIL_ADDRESS
-                .matcher(edtEmail.getText().toString()).matches() || edtEmail.getText().toString() == "") {
-            edtEmail.requestFocus();
+                .matcher(edtEmail.getText().toString()).matches()) {
 
+            if (edtEmail.getText().toString().equals("")) {
+                MyToast.s(context, "Email入力してください。");
+                edtEmail.requestFocus();
+                return false;
+            }
+
+            MyToast.s(context, "Emailの形式が正しくありません。");
+            edtEmail.requestFocus();
             return false;
         }
 
         if (!Pattern.matches("^[a-zA-Z0-9!@.#$%^&*?_~]{4,16}$", edtPw.getText().toString())) {
             edtPw.requestFocus();
-
             return false;
         }
 
         return true;
     }
 
-    private void checkLoginInfo() { //todo
-    }
 
     public void callProcessUserInfo() {
-
         UserInfoItem sendToDbUserItem = getUserInfoItem();
-
-        ResUserInfo resUserInfo = new ResUserInfo();
-
-
         final RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
 
         Call<UserInfoItem> call = remoteService.selectUserInfo(sendToDbUserItem);
         call.enqueue(new Callback<UserInfoItem>() {
             @Override
             public void onResponse(Call<UserInfoItem> call, Response<UserInfoItem> response) {
-
-                //var useritem = UserItem();
-
                 userInfoItem = response.body();
-
                 ResUserInfo resUserInfo1 = userInfoItem.getResResults();
+
                 if (response.isSuccessful() && userInfoItem.getResCd().equals("0000")) {
                     MyLog.d(TAG, "success " + response.body().toString());
-
-
-                    ((MyApp) getApplication()).setResUserInfo(resUserInfo1);
-
-                    resUserInfo1.getEmail();
-                    editor.putString("USER_ID", userInfoItem.getResResults().getUserId());
+                    // Save resUserInfo
+                    //setAutoLogin();
+                    int userId = resUserInfo1.getUserId();
+                    editor.putInt("USER_ID",userId);
                     editor.commit();
-
+                    ((MyApp) getApplication()).setResUserInfo(resUserInfo1);
                     GoLib.getInstance().goMainActivity(context);
-
                 } else {
                     MyLog.d(TAG, "not success");
                 }
@@ -230,30 +234,37 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         sharedPreferences = getSharedPreferences("setting", 0);
         editor = sharedPreferences.edit();
 
-        if (sharedPreferences.getBoolean("Auto_Login_enabled", false)) {
+ /*       if (sharedPreferences.getBoolean("Auto_Login_enabled", false)) {
             edtEmail.setText(sharedPreferences.getString("ID", ""));
             edtPw.setText(sharedPreferences.getString("PW", ""));
             autoLogin.setChecked(true);
 
-            GoLib.getInstance().goMainActivity(this);
+            //GoLib.getInstance().goMainActivity(this);
         }
-
+*/
         autoLogin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    String ID = edtEmail.getText().toString();
+
+                editor.putBoolean("Auto_Login_enabled", isChecked);
+                editor.commit();
+
+
+               /* if (isChecked) {
+                    String EMAIL = edtEmail.getText().toString();
                     String PW = edtPw.getText().toString();
-                    editor.putString("USER_EMAIL", ID);
+                    editor.putString("USER_EMAIL", EMAIL);
                     editor.putString("USER_PW", PW);
+                    //editor.putInt("USER_ID", )
                     editor.putBoolean("Auto_Login_enabled", true);
-                    //editor.putString("USER_ID", userInfoItem.getResResults().getUser_id());
+
                     editor.commit();
 
                 } else {
                     editor.clear();
                     editor.commit();
-                }
+                }*/
+
             }
         });
     }
