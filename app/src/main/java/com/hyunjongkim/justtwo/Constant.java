@@ -9,5 +9,7 @@ public interface Constant {
     String ORDER_TYPE_METER = "";
     String ORDER_TYPE_FAVORITE = "keep_cnt";
     String ORDER_TYPE_RECENT = "host_date";
+    String awsUrl = "http://54.92.71.204:3000";
+    int LIST_TYPE_VALUE = 2;
 
 }

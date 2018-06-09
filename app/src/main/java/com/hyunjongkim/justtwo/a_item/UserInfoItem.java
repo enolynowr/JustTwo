@@ -2,6 +2,7 @@ package com.hyunjongkim.justtwo.a_item;
 
 
 import com.google.gson.annotations.SerializedName;
+import com.hyunjongkim.justtwo.a_item.res.ResUserInfo;
 
 @org.parceler.Parcel
 public class UserInfoItem {

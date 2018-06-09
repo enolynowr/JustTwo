@@ -134,20 +134,16 @@ public class PermissionActivity extends AppCompatActivity {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle(R.string.permission_setting_title);
         dialog.setMessage(R.string.permission_setting_message);
-        dialog.setPositiveButton(R.string.setting, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-                MyToast.s(PermissionActivity.this, R.string.permission_setting_restart);
-                PermissionActivity.this.finish();
+        dialog.setPositiveButton(R.string.setting, (dialog12, which) -> {
+            dialog12.cancel();
+            MyToast.s(PermissionActivity.this, R.string.permission_setting_restart);
+            PermissionActivity.this.finish();
 
-                goAppSettingActivity();
-            }
+            goAppSettingActivity();
         });
-        dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-                PermissionActivity.this.finish();
-            }
+        dialog.setNegativeButton(R.string.cancel, (dialog1, which) -> {
+            dialog1.cancel();
+            PermissionActivity.this.finish();
         });
         dialog.show();
     }

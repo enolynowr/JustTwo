@@ -14,14 +14,13 @@ import com.hyunjongkim.justtwo.a_adapter.ManagementTabAdapter;
 
 public class Management extends AppCompatActivity {
 
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        TabLayout tabLayout;
+        ViewPager viewPager;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.manage_base);
-
         setToolbar();
 
 // Initializing the TabLayout
@@ -78,7 +77,7 @@ public class Management extends AppCompatActivity {
         return true;
     }
 
-// Toolbarの設定
+    // Toolbarの設定
     private void setToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

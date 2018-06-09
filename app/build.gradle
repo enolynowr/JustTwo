@@ -3,6 +3,9 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 27
+    dataBinding {
+        enabled = true
+    }
     defaultConfig {
         applicationId "com.hyunjongkim.justtwo"
         minSdkVersion 23

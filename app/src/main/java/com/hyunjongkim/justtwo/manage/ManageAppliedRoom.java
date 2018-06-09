@@ -20,7 +20,6 @@ import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
 import com.hyunjongkim.justtwo.a_adapter.ManageAppliedRoomListAdapter;
 import com.hyunjongkim.justtwo.a_custom.EndlessRecyclerViewScrollListener;
-import com.hyunjongkim.justtwo.a_item.ManagementInfoItem;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 
 import java.util.ArrayList;

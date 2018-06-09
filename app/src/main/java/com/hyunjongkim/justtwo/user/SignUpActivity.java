@@ -2,9 +2,7 @@ package com.hyunjongkim.justtwo.user;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -37,16 +35,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private final String TAG = this.getClass().getSimpleName();
 
-    Context context;
-    UserInfoItem currentItem;
+    private Context context;
+    private int selectedUserSex;
+    private int selectedUserAge;
 
-    int selectedUserSex;
-    int selectedUserAge;
-
-    EditText emailEdt;
-    EditText pwEdt;
-    EditText sexEdt;
-    EditText ageEdt;
+    private EditText emailEdt;
+    private EditText pwEdt;
+    private EditText sexEdt;
+    private EditText ageEdt;
 
     // 액티비티를 생성하고 화면을 구성한다.
     @Override
@@ -54,32 +50,17 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up);
         context = this;
-
-        currentItem = ((MyApp) getApplication()).getUserInfoItem();
-
         setToolbar();
         setView();
     }
 
 
-    /**
-     * SETTING MENU
-     *
-     * @param menu INSTANCE OF MENU
-     * @return SHOWING MENU true, NOT false
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_submit, menu);
         return true;
     }
 
-    /**
-     * SETTING PROCESSING FOR CLICKING SHAPE ARROW (android.R.id.home) AND SUMIT BUTTON OF MENU
-     *
-     * @param item 메뉴 아이템 객체
-     * @return 메뉴를 처리했다면 true, 그렇지 않다면 false
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -102,11 +83,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         return true;
     }
 
-    // 後ろボータンを押したとき、
     @Override
     public void onBackPressed() {
         finish();
     }
+
     @Override
     public void onClick(View v) {
     }
@@ -131,20 +112,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         pwEdt = findViewById(R.id.edt_password);
 
         sexEdt = findViewById(R.id.edt_sex);
-        sexEdt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setSexTypeDialog();
-            }
-        });
+        sexEdt.setOnClickListener(v -> setSexTypeDialog());
 
         ageEdt = findViewById(R.id.edt_age);
-        ageEdt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setAgeTypeDialog();
-            }
-        });
+        ageEdt.setOnClickListener(v -> setAgeTypeDialog());
     }
 
     // 性別 Dialog
@@ -155,15 +126,15 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         sexTypes[2] = getResources().getString(R.string.sex_woman);
 
         new AlertDialog.Builder(this)
-                .setItems(sexTypes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which >= 0) {
-                            selectedUserSex = which;
-                            sexEdt.setText(sexTypes[which]);
-                        }
-                        dialog.dismiss();
+                .setItems(sexTypes, (dialog, which) -> {
+
+                    if (which >= 0) {
+                        selectedUserSex = which;
+                        sexEdt.setText(sexTypes[which]);
                     }
+
+                    dialog.dismiss();
+
                 }).show();
     }
 
@@ -177,15 +148,15 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         new AlertDialog.Builder(this)
-                .setItems(ageTypes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which >= 0) {
-                            selectedUserAge = which;
-                            ageEdt.setText(ageTypes[which]);
-                        }
-                        dialog.dismiss();
+                .setItems(ageTypes, (dialog, which) -> {
+
+                    if (which >= 0) {
+                        selectedUserAge = which;
+                        ageEdt.setText(ageTypes[which]);
                     }
+
+                    dialog.dismiss();
+
                 }).show();
     }
 
@@ -254,7 +225,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(_email.getText().toString()).matches()) {
 
-            if ( _email.getText().toString().equals("")){
+            if (_email.getText().toString().equals("")) {
                 MyToast.l(SignUpActivity.this, "emailを入力してください。");
                 _email.requestFocus();
                 return false;
@@ -284,7 +255,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         return true;
     }
 
-    // ユーザが入力した情報を保存する。
+
     private void save() {
         UserInfoItem userInfoItem = getUserInfoItem();
         MyLog.d(TAG, "insertItem " + userInfoItem.toString());

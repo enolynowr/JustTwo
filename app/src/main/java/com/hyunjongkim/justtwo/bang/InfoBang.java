@@ -1,7 +1,6 @@
 package com.hyunjongkim.justtwo.bang;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -11,23 +10,22 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
-import com.hyunjongkim.justtwo.a_item.ReqGetRoomDetailInfoItem;
-import com.hyunjongkim.justtwo.a_item.ResGetRoomInfoDetailItem;
-import com.hyunjongkim.justtwo.a_item.ResRoomInfo;
+import com.hyunjongkim.justtwo.a_item.req.ReqGetRoomDetailInfoItem;
+import com.hyunjongkim.justtwo.a_item.req.ReqRegApplyInfo;
+import com.hyunjongkim.justtwo.a_item.res.ResGetRoomInfoDetailItem;
+import com.hyunjongkim.justtwo.a_item.res.ResResultCodeAndMsg;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 import com.hyunjongkim.justtwo.a_lib.GoLib;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
+import com.hyunjongkim.justtwo.a_lib.MyToast;
 import com.hyunjongkim.justtwo.a_lib.StringLib;
 import com.hyunjongkim.justtwo.a_remote.RemoteService;
 import com.hyunjongkim.justtwo.a_remote.ServiceGenerator;
@@ -44,22 +42,19 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
 
     public static final String ROOM_ID = "ROOM_ID";
     public static final String USER_ID = "USER_ID";
+    public static final String ROOM_STATUS = "ROOM_STATUS";
 
     // VIEW
-    View loadingText;
-    View headerLayout;
-    ScrollView scrollView;
-    DrawerLayout drawer;
     Context context;
-    ResRoomInfo resRoomInfo;
     RoomInfoItem item;
     ReqGetRoomDetailInfoItem reqGetRoomDetailInfoItem;
     ResGetRoomInfoDetailItem resGetRoomDetailInfoItem;
+    ResResultCodeAndMsg resResultCodeAndMsg;
 
     private final String TAG = this.getClass().getSimpleName();
-    String userEmail;
     int roomId;
     int userId;
+    boolean roomStatus;
 
     //
     @Override
@@ -69,15 +64,9 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
         reqGetRoomDetailInfoItem = new ReqGetRoomDetailInfoItem();
 
         context = this;
-        drawer = findViewById(R.id.drawer_layout);
-//        loadingText = findViewById(R.id.a_loading_layout);
-
-        userEmail = ((MyApp) getApplication()).getUserEmail();
         roomId = getIntent().getIntExtra(ROOM_ID, 0);
         userId = getIntent().getIntExtra(USER_ID, 0);
-
-       /* resRoomInfoDetail.setRoomId(roomId);
-        resRoomInfoDetail.setUserId(userId);*/
+        roomStatus = getIntent().getBooleanExtra(ROOM_STATUS, true);
         reqGetRoomDetailInfoItem.setRoomId(roomId);
         reqGetRoomDetailInfoItem.setUserId(userId);
 
@@ -93,6 +82,12 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+        if (!roomStatus) {
+            getMenuInflater().inflate(R.menu.menu_close, menu);
+            return true;
+        }
+
         getMenuInflater().inflate(R.menu.menu_request, menu);
         return true;
     }
@@ -119,11 +114,6 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
     //
     @Override
     public void onClick(View v) {
-        /* if (v.getId() == R.id.location) {
-            movePosition(new LatLng(item.latitude, item.longitude),
-                    Constant.MAP_ZOOM_LEVEL_DETAIL);
-        }*/
-
     }
 
     /**
@@ -151,16 +141,6 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
             actionBar.setTitle("部屋申込");
 
         }
-        // need to layout inflate
-        /*DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        headerLayout = navigationView.getHeaderView(0);*/
     }
 
     //서버에서 조회한 맛집 정보를 화면에 설정한다.
@@ -178,20 +158,7 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
         hostDate.setText(resGetRoomDetailInfoItem.getResGetRoomDetailInfoItemResult().getDateTime());
         hostPlace.setText(resGetRoomDetailInfoItem.getResGetRoomDetailInfoItemResult().getLocation());
         description.setText(resGetRoomDetailInfoItem.getResGetRoomDetailInfoItemResult().getDescription());
-
-/*
-        if (!StringLib.getInstance().isBlank(item.hostDate)) {
-            hostDate.setText(item.hostDate);
-        } else {
-            hostDate.setVisibility(View.GONE);
-        }
-
-        if (!StringLib.getInstance().isBlank(item.hostTime)) {
-            hostTime.setText(item.hostTime);
-        } else {
-            hostTime.setVisibility(View.GONE);
-        }
-*/
+        appliedCnt.setText(String.valueOf(resGetRoomDetailInfoItem.getResGetRoomDetailInfoItemResult().getAppliedCount()));
 
     }
 
@@ -207,16 +174,13 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
             public void onResponse(Call<ResGetRoomInfoDetailItem> call, Response<ResGetRoomInfoDetailItem> response) {
                 resGetRoomDetailInfoItem = response.body();
 
-                Log.d("로그당 : ", "resGetRoomDetailInfoItem : " + resGetRoomDetailInfoItem.toString());
+                MyLog.d(TAG, "NULL roomid");
 
 
                 if (response.isSuccessful() && resGetRoomDetailInfoItem != null && resGetRoomDetailInfoItem.getResGetRoomDetailInfoItemResult().getRoomId() > 0) {
 
                     setView();
-                    // loadingText.setVisibility(View.GONE);
                 } else {
-                    // loadingText.setVisibility(View.VISIBLE);
-                    // ((TextView) findViewById(R.id.loading_text)).setText(R.string.loading_not);
                 }
 
             }
@@ -228,6 +192,35 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
             }
         });
     }
+
+
+    // 방 참가신청 정보를 Insert
+    private void insertApplingRoomInfo(ReqRegApplyInfo _reqRegApplyInfo) {
+        RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
+        Call<ResResultCodeAndMsg> call = remoteService.insertApplingRoomInfo(_reqRegApplyInfo);
+
+        call.enqueue(new Callback<ResResultCodeAndMsg>() {
+            @Override
+            public void onResponse(Call<ResResultCodeAndMsg> call, Response<ResResultCodeAndMsg> response) {
+                resResultCodeAndMsg = response.body();
+
+                if (response.isSuccessful() && resResultCodeAndMsg != null && resResultCodeAndMsg.getResResultCode().equals("0000")) {
+
+                    GoLib.getInstance().goMainActivity(context);
+                } else {
+                    MyToast.s(context, "Noooooo");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResResultCodeAndMsg> call, Throwable t) {
+                MyLog.d(TAG, "no internet connectivity");
+                MyLog.d(TAG, t.toString());
+            }
+        });
+    }
+
 
     private void checkValid(TextView... _textView) {
 
@@ -250,24 +243,26 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
         builder.setMessage("AlertDialog Content");
         builder.setView(edittext);
         builder.setPositiveButton("SEND",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+                (dialog, which) -> {
+                    /*
+                     * todo
+                     *  roomId, userId를 메인리스트로 가기전에 call api(참가신청요청)
+                     *
+                     * */
+
+                    ReqRegApplyInfo reqRegApplyInfo = new ReqRegApplyInfo();
+                    reqRegApplyInfo.setUserId(userId);
+                    reqRegApplyInfo.setRoomId(roomId);
+                    reqRegApplyInfo.setMessage("aaaaa");
+
+                    insertApplingRoomInfo(reqRegApplyInfo);
 
 
-                        /*
-                         * todo
-                         *  roomId, userId를 메인리스트로 가기전에 call api(참가신청요청)
-                         *
-                         * */
-
-                    }
                 });
-        builder.setNegativeButton("CANCEL",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+        builder.setNegativeButton("CANCEL", (dialog, which) -> {
 
-                    }
-                });
+                }
+        );
         builder.show();
     }
 
@@ -278,14 +273,16 @@ public class InfoBang extends AppCompatActivity implements View.OnClickListener,
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            GoLib.getInstance().goHome(this);
-        } else if (id == R.id.nav_manage_room) {
-            GoLib.getInstance().goManagementActivity(this);
-        } else if (id == R.id.nav_manage) {
-            GoLib.getInstance().goManagementActivity(this);
-        } else if (id == R.id.nav_manage) {
-
+        switch (id) {
+            case R.id.nav_home:
+                GoLib.getInstance().goHome(this);
+                break;
+            case R.id.nav_manage_room:
+                GoLib.getInstance().goManagementActivity(this);
+                break;
+            case R.id.nav_manage:
+                GoLib.getInstance().goManagementActivity(this);
+                break;
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

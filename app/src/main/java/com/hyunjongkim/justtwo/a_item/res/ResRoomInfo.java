@@ -1,4 +1,4 @@
-package com.hyunjongkim.justtwo.a_item;
+package com.hyunjongkim.justtwo.a_item.res;
 
 import com.google.gson.annotations.SerializedName;
 

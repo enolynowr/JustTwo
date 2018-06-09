@@ -11,10 +11,8 @@ import android.widget.TextView;
 
 import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
-import com.hyunjongkim.justtwo.a_item.ResRoomInfo;
-import com.hyunjongkim.justtwo.a_item.ResUserInfo;
-import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
-import com.hyunjongkim.justtwo.a_item.UserInfoItem;
+import com.hyunjongkim.justtwo.a_item.res.ResRoomInfo;
+import com.hyunjongkim.justtwo.a_item.res.ResUserInfo;
 import com.hyunjongkim.justtwo.a_lib.GoLib;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
 
@@ -25,11 +23,12 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
 
     private final String TAG = this.getClass().getSimpleName();
     private Context context;
-    //private ArrayList<RoomInfoItem> itemList;
     private ArrayList<ResRoomInfo> itemList;
-    private UserInfoItem userInfoItem;
     private ResUserInfo resUserInfo;
     private int resource;
+
+    boolean roomStatus;
+    ResRoomInfo resRoomitem;
 
     //Constructor
     public MainListAdapter(Context context, int resource, ArrayList<ResRoomInfo> itemList) {
@@ -51,7 +50,8 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        final ResRoomInfo resRoomitem = itemList.get(position);
+
+        resRoomitem = itemList.get(position);
         MyLog.d(TAG, "getView" + resRoomitem);
         holder.rowCategory.setText(resRoomitem.getCategory());
         holder.rowDate.setText(resRoomitem.getDateTime());
@@ -61,18 +61,18 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
         switch (resRoomitem.getStatus()) {
             case 0:
                 holder.btnRowRoomStatus.setText(R.string.main_list_room_status_vacant);
+                roomStatus = true;
                 break;
             case 1:
                 holder.btnRowRoomStatus.setText(R.string.main_list_room_status_full);
+                roomStatus = false;
                 break;
             case 9:
                 holder.btnRowRoomStatus.setText(R.string.main_list_room_status_expired);
                 break;
         }
 
-        holder.btnRowRoomStatus.setOnClickListener((View v) -> {
-            GoLib.getInstance().goInfoBang(context, resRoomitem.getRoomId(), resUserInfo.getUserId());
-        });
+        holder.btnRowRoomStatus.setOnClickListener((View v) -> GoLib.getInstance().goInfoBang(context, resRoomitem.getRoomId(), resUserInfo.getUserId(), roomStatus));
     }
 
     @Override

@@ -2,7 +2,6 @@
 package com.hyunjongkim.justtwo;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,19 +10,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.hyunjongkim.justtwo.a_item.ResUserInfo;
+import com.hyunjongkim.justtwo.a_item.res.ResUserInfo;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 import com.hyunjongkim.justtwo.a_lib.GoLib;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
 import com.hyunjongkim.justtwo.a_lib.RemoteLib;
-import com.hyunjongkim.justtwo.a_lib.StringLib;
 import com.hyunjongkim.justtwo.a_remote.RemoteService;
 import com.hyunjongkim.justtwo.a_remote.ServiceGenerator;
-import com.hyunjongkim.justtwo.user.Login;
-import com.hyunjongkim.justtwo.user.SignUpActivity;
 
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,12 +33,12 @@ public class IndexActivity extends AppCompatActivity {
     // IF ISN'T CONNECTING TO INTERNET THEN CALL showNoService()
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
         context = this;
         if (!RemoteLib.getInstance().isConnected(context)) {
             showNoService();
-            return;
         }
     }
 
@@ -55,12 +50,7 @@ public class IndexActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Handler mHandler = new Handler();
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startTask();
-            }
-        }, 1200);
+        mHandler.postDelayed(() -> startTask(), 1200);
     }
 
     // SHOWING MSG, BUTTON OF FINISH DISPLAY  WHEN DON'T CONNECT TO THE INTERNET
@@ -68,12 +58,7 @@ public class IndexActivity extends AppCompatActivity {
         TextView messageText = findViewById(R.id.message);
         messageText.setVisibility(View.VISIBLE);
         Button closeButton = findViewById(R.id.close);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        closeButton.setOnClickListener(v -> finish());
         closeButton.setVisibility(View.VISIBLE);
     }
 
@@ -81,9 +66,8 @@ public class IndexActivity extends AppCompatActivity {
         SharedPreferences shared = getSharedPreferences("setting", 0);
 
         // IF NOT AUTO LOGIN, GO TO LOGIN
-        if (shared.getBoolean("Auto_Login_enabled", false) == false) {
+        if (!shared.getBoolean("Auto_Login_enabled", false)) {
             GoLib.getInstance().goLoginActivity(this);
-            return;
         } else {
             callProcessUserInfo();
             userInfoItemForshared = new UserInfoItem();
@@ -95,7 +79,6 @@ public class IndexActivity extends AppCompatActivity {
             //
             ((MyApp) getApplication()).setUserInfoItem(userInfoItemForshared);
             GoLib.getInstance().goMainActivity(getApplicationContext());
-            return;
         }
     }
 

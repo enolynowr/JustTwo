@@ -118,8 +118,7 @@
                     android:id="@+id/show_applied_cnt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:text="10p" />
+                    android:gravity="end" />
 
             </LinearLayout>
         </LinearLayout>

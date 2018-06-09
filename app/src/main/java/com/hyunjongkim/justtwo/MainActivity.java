@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
@@ -24,8 +22,6 @@ public class MainActivity extends AppCompatActivity
 
     private final String TAG = getClass().getSimpleName();
 
-    UserInfoItem userInfoItem;
-    DrawerLayout drawer;
     View headerLayout;
 
     @Override
@@ -34,22 +30,16 @@ public class MainActivity extends AppCompatActivity
         // LAYOUT
         setContentView(R.layout.a_main);
 
-        userInfoItem = ((MyApp) getApplication()).getUserInfoItem();
         // TOOL BAR
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        drawer = findViewById(R.id.drawer_layout);
-
         // FLOATING BTN(FOR GOING REGISTER ROOM)
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                GoLib.getInstance().goBangRegisterActivity(getApplicationContext());
-               /* Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
-            }
+        fab.setOnClickListener(view -> {
+            GoLib.getInstance().goBangRegisterActivity(getApplicationContext());
+           /* Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();*/
         });
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -63,17 +53,14 @@ public class MainActivity extends AppCompatActivity
         headerLayout = navigationView.getHeaderView(0);
         // LOG OUT
         Button logOut = headerLayout.findViewById(R.id.btn_nav_header);
-        logOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences auto = getSharedPreferences("setting", Activity.MODE_PRIVATE);
-                SharedPreferences.Editor editor = auto.edit();
+        logOut.setOnClickListener(v -> {
+            SharedPreferences auto = getSharedPreferences("setting", Activity.MODE_PRIVATE);
+            SharedPreferences.Editor editor = auto.edit();
 
-                editor.clear();
-                editor.commit();
+            editor.clear();
+            editor.commit();
 
-                GoLib.getInstance().goLoginActivity(getApplicationContext());
-            }
+            GoLib.getInstance().goLoginActivity(getApplicationContext());
         });
 
         GoLib.getInstance()
@@ -88,6 +75,7 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+
         }
     }
 
@@ -97,15 +85,17 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            GoLib.getInstance().goHome(this);
-        } else if (id == R.id.nav_manage_room) {
-            GoLib.getInstance().goManagementActivity(this);
-        } else if (id == R.id.nav_manage) {
-            GoLib.getInstance().goManagementActivity(this);
-        } else if (id == R.id.nav_manage) {
-
-        }
+        switch (id) {
+            case R.id.nav_home:
+                GoLib.getInstance().goHome(this);
+                break;
+            case R.id.nav_manage_room:
+                GoLib.getInstance().goManagementActivity(this);
+                break;
+            case R.id.nav_manage:
+                GoLib.getInstance().goManagementActivity(this);
+                break;
+         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -1,4 +1,4 @@
-package com.hyunjongkim.justtwo.a_item;
+package com.hyunjongkim.justtwo.a_item.res;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -12,7 +12,7 @@ public class ResGetRoomDetailInfoItemResult {
         this.roomId = roomId;
     }
 
-    public int getApply_count() {
+    public int getAppliedCount() {
         return apply_count;
     }
 

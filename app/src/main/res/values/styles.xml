@@ -44,6 +44,12 @@
         
     </style>
 
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_margin="@dimen/spacing_small"

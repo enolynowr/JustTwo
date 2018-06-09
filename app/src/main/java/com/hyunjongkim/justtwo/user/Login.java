@@ -3,6 +3,7 @@ package com.hyunjongkim.justtwo.user;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -12,7 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
+
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -20,15 +21,16 @@ import android.widget.Toast;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.hyunjongkim.justtwo.MyApp;
 import com.hyunjongkim.justtwo.R;
-import com.hyunjongkim.justtwo.a_item.ResUserInfo;
+import com.hyunjongkim.justtwo.a_item.res.ResUserInfo;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 import com.hyunjongkim.justtwo.a_lib.GoLib;
 import com.hyunjongkim.justtwo.a_lib.MyLog;
 import com.hyunjongkim.justtwo.a_lib.MyToast;
 import com.hyunjongkim.justtwo.a_remote.RemoteService;
 import com.hyunjongkim.justtwo.a_remote.ServiceGenerator;
+import com.hyunjongkim.justtwo.databinding.LoginBinding;
 import com.hyunjongkim.justtwo.user.social_login.LineLogin;
-import com.hyunjongkim.justtwo.user.social_login.TwitterLogin;
+
 import com.hyunjongkim.justtwo.user.social_login.impl.OnResponseListener;
 import com.hyunjongkim.justtwo.user.social_login.impl.ResultType;
 import com.hyunjongkim.justtwo.user.social_login.impl.SocialType;
@@ -45,30 +47,30 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private final String TAG = this.getClass().getSimpleName();
 
+    private LoginBinding loginBinding;
+    private EditText edtEmail;
+    private EditText edtPw ;
+    private BootstrapButton btnLogin;
+    private ImageButton btnLineLogin;
+    private CheckBox autoLogin;
+
     //SOCIAL LOGIN
     private LineLogin lineModule;
-    private TwitterLogin twitterModule;
-    UserInfoItem userInfoItem;
+
     // AUTO LOGIN
-    SharedPreferences.Editor editor;
-    SharedPreferences sharedPreferences;
-
+    private SharedPreferences.Editor editor;
+    private SharedPreferences sharedPreferences;
+    private Context context;
+    private String valEdtEmail;
+    private String valEdtPw;
     boolean loginChecked;
-    EditText edtEmail, edtPw;
-
-    BootstrapButton btnLogin;
-    //Button btnLogin;
-    ImageButton btnLineLogin;
-    ImageButton btnTwitterLogin;
-    Context context;
-    String valEdtEmail, valEdtPw;
-    CheckBox autoLogin;
+    private UserInfoItem userInfoItem;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-        setContentView(R.layout.login);
+        loginBinding = DataBindingUtil.setContentView(this, R.layout.login);
         setToolbar();
         setView();
         setAutoLogin();
@@ -81,11 +83,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login:
-                valEdtPw = edtPw.getText().toString();
                 valEdtEmail = edtEmail.getText().toString();
+                valEdtPw = edtPw.getText().toString();
 
-                if (sharedPreferences.getBoolean("Auto_Login_enabled", false)){
-
+                if (sharedPreferences.getBoolean("Auto_Login_enabled", false)) {
                     String EMAIL = edtEmail.getText().toString();
                     String PW = edtPw.getText().toString();
                     editor.putString("USER_EMAIL", EMAIL);
@@ -104,16 +105,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             case R.id.btn_lg_line:
                 lineModule.onLogin();
                 break;
-            case R.id.btn_lg_tw:
-                twitterModule.onLogin();
-                break;
         }
     }
 
     /**
      * 右上のメニューを設定（転送）
      *
-     *  @return SHOW MENU true, DON'T SHOW MENU false
+     * @return SHOW MENU true, DON'T SHOW MENU false
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -141,14 +139,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         lineModule.onActivityResult(requestCode, resultCode, data);
-        twitterModule.onActivityResult(requestCode, resultCode, data);
     }
 
 ////////////////////////////// FUNCTION
 
     // SETTING TOOL BAR
     private void setToolbar() {
-        final Toolbar toolbar = findViewById(R.id.toolbar );
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
 
@@ -160,14 +157,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     // SETTING VIEW
     private void setView() {
-        edtEmail = findViewById(R.id.edt_lg_email);
-        edtPw = findViewById(R.id.edt_lg_password);
-        autoLogin = findViewById(R.id.auto_login);
-        // social btn
-        btnLogin = findViewById(R.id.btn_login);
-        btnLineLogin = findViewById(R.id.btn_lg_line);
-        btnTwitterLogin = findViewById(R.id.btn_lg_tw);
-        btnTwitterLogin.setOnClickListener(this);
+        edtEmail = loginBinding.edtLgEmail;
+        edtPw = loginBinding.edtLgPassword;
+        btnLogin = loginBinding.btnLogin;
+        btnLineLogin = loginBinding.btnLgLine;
+        autoLogin = loginBinding.autoLogin;
         btnLineLogin.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
     }
@@ -197,7 +191,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     }
 
 
-    public void callProcessUserInfo() {
+    private void callProcessUserInfo() {
         UserInfoItem sendToDbUserItem = getUserInfoItem();
         final RemoteService remoteService = ServiceGenerator.createService(RemoteService.class);
 
@@ -210,10 +204,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
                 if (response.isSuccessful() && userInfoItem.getResCd().equals("0000")) {
                     MyLog.d(TAG, "success " + response.body().toString());
-                    // Save resUserInfo
-                    //setAutoLogin();
+
                     int userId = resUserInfo1.getUserId();
-                    editor.putInt("USER_ID",userId);
+                    editor.putInt("USER_ID", userId);
                     editor.commit();
                     ((MyApp) getApplication()).setResUserInfo(resUserInfo1);
                     GoLib.getInstance().goMainActivity(context);
@@ -234,39 +227,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         sharedPreferences = getSharedPreferences("setting", 0);
         editor = sharedPreferences.edit();
 
- /*       if (sharedPreferences.getBoolean("Auto_Login_enabled", false)) {
-            edtEmail.setText(sharedPreferences.getString("ID", ""));
-            edtPw.setText(sharedPreferences.getString("PW", ""));
-            autoLogin.setChecked(true);
-
-            //GoLib.getInstance().goMainActivity(this);
-        }
-*/
-        autoLogin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                editor.putBoolean("Auto_Login_enabled", isChecked);
-                editor.commit();
-
-
-               /* if (isChecked) {
-                    String EMAIL = edtEmail.getText().toString();
-                    String PW = edtPw.getText().toString();
-                    editor.putString("USER_EMAIL", EMAIL);
-                    editor.putString("USER_PW", PW);
-                    //editor.putInt("USER_ID", )
-                    editor.putBoolean("Auto_Login_enabled", true);
-
+        autoLogin.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    editor.putBoolean("Auto_Login_enabled", isChecked);
                     editor.commit();
-
-                } else {
-                    editor.clear();
-                    editor.commit();
-                }*/
-
-            }
-        });
+                }
+        );
     }
 
     private boolean loginValidation(String id, String password) {
@@ -284,23 +249,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void lineLogin() {
-        lineModule = new LineLogin(this, new OnResponseListener() {
-            @Override
-            public void onResult(SocialType socialType, ResultType resultType, Map<UserInfoType, String> map) {
+        lineModule = new LineLogin(this, (socialType, resultType, map) -> {
 
-            }
         });
     }
 
-    private void twitterLogin() {
-        twitterModule = new TwitterLogin(this, new OnResponseListener() {
-            @Override
-            public void onResult(SocialType socialType, ResultType resultType, Map<UserInfoType, String> map) {
-            }
-        });
-    }
-
-    //
+       //
     private UserInfoItem getUserInfoItem() {
         UserInfoItem userInfoItem = new UserInfoItem();
         userInfoItem.email = edtEmail.getText().toString();

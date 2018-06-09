@@ -24,7 +24,6 @@ import com.hyunjongkim.justtwo.a_remote.ServiceGenerator;
 
 import org.parceler.Parcels;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -51,20 +50,10 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
     Button btnSaveBangInfo;
 
     //MAKE INSTANCE RegisterBangInput
-    public static RegisterBangInput newInstance(RoomInfoItem infoItem) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(INFO_ITEM, Parcels.wrap(infoItem));
-        RegisterBangInput fragment = new RegisterBangInput();
-        fragment.setArguments(bundle);
-        return fragment;
+    public static RegisterBangInput newInstance() {
+        return new RegisterBangInput();
     }
 
-    /**
-     * CALLING ON MAKING FRAGMENT 프래그먼트가 생성될 때 호출되며 인자에 저장된 FoodInfoItem를
-     * BestFoodRegisterActivity에 currentItem를 저장한다.
-     *
-     * @param savedInstanceState 프래그먼트가 새로 생성되었을 경우, 이전 상태 값을 가지는 객체
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,10 +61,6 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
         if (getArguments() != null) {
             // UNWRAP
             infoItem = Parcels.unwrap(getArguments().getParcelable(INFO_ITEM));
-
-            if (infoItem.roomInx != 0) {
-                RegisterBangBase.currentItem = infoItem;
-            }
 
             MyLog.d(TAG, "infoItem " + infoItem);
         }
@@ -87,22 +72,12 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
         context = this.getActivity();
         // CATEGORY
         spnData = getResources().getStringArray(R.array.bang_category);
-        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, spnData);
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, spnData);
         MyLog.d(TAG, "address" + address);
 
         return inflater.inflate(R.layout.bang_register, container, false);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (spnData == null) {
-
-        }
-    }
-
-    // CALLING AFTER onCreateView() METHOD
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -156,6 +131,7 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
             regiRoomInfo(infoItem);
         }
     }
+
 /////////////////////// FUNCTION
 
     // Userが入力した情報をCheckし、保存する
@@ -196,31 +172,21 @@ public class RegisterBangInput extends Fragment implements View.OnClickListener 
                 RoomInfoItem roomInfoItem = response.body();
 
                 if (response.isSuccessful() && roomInfoItem.getResCd().equals("0000")) {
-
-                    MyLog.d(TAG, "<<SUCCESS>>" + roomInfoItem.getResCd().toString());
+                    MyLog.d(TAG, "<<SUCCESS>>" + roomInfoItem.getResCd());
                     GoLib.getInstance().goMainActivity(context);
-
-                } else { // 등록 실패
-                    int statusCode = response.code();
-                    ResponseBody errorBody = response.errorBody();
-                    MyLog.d(TAG, "<<FAIL>>" + statusCode + errorBody.toString());
                 }
             }
 
             @Override
             public void onFailure(Call<RoomInfoItem> call, Throwable t) {
-                MyLog.d(TAG, "no internet connectivity");
+                MyLog.d(TAG, "<<< CONNECT ERROR >>>");
             }
         });
     }
 
     private String modifyDateAndTime() {
-
-
         String date = dateTv.getText().toString();
-
         date.replaceAll("\\p{InCJKUnifiedIdeographs}", "-");
-
         String time = timeTv.getText().toString();
         time.replaceAll("\\p{InCJKUnifiedIdeographs}", ":");
 

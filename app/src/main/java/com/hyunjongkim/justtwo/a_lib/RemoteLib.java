@@ -26,6 +26,7 @@ public class RemoteLib {
 
     /**
      * 네트워크 연결 여부를 반환한다.
+     *
      * @param context 컨텍스트
      * @return 네트워크 연결여부
      */
@@ -37,6 +38,7 @@ public class RemoteLib {
 
             return info != null;
         } catch (Exception e) {
+            MyLog.d(TAG,"REMOTE_LIB");
             return false;
         }
     }

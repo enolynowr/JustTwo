@@ -5,12 +5,11 @@ import android.os.StrictMode;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.hyunjongkim.justtwo.a_item.ManagementInfoItem;
-import com.hyunjongkim.justtwo.a_item.ResUserInfo;
+import com.hyunjongkim.justtwo.a_item.res.ResUserInfo;
 import com.hyunjongkim.justtwo.a_item.RoomInfoItem;
 import com.hyunjongkim.justtwo.a_item.UserInfoItem;
 import com.hyunjongkim.justtwo.user.social_login.LineConfig;
 import com.hyunjongkim.justtwo.user.social_login.SocialLogin;
-import com.hyunjongkim.justtwo.user.social_login.TwitterConfig;
 import com.hyunjongkim.justtwo.user.social_login.impl.SocialType;
 
 
@@ -22,7 +21,6 @@ public class MyApp extends Application {
     private UserInfoItem userInfoItem;
     private RoomInfoItem roomInfoItem;
     private ResUserInfo resUserInfo;
-
 
 
     private ManagementInfoItem managementInfoItem;
@@ -43,6 +41,11 @@ public class MyApp extends Application {
 
 
     public ResUserInfo getResUserInfo() {
+
+        if (resUserInfo == null) {
+            resUserInfo = new ResUserInfo();
+        }
+
         return resUserInfo;
     }
 
@@ -83,11 +86,6 @@ public class MyApp extends Application {
                 .setChannelId("1581878477")
                 .build();
         SocialLogin.addType(SocialType.LINE, lineConfig);
-        // TWITTER
-        TwitterConfig twitterConfig = new TwitterConfig.Builder()
-                .setConsumerKey("a8UIpD2q3h3HikhRQnohsrbSd")
-                .setConsumerSecret("oZvl24EFkLR4fz2aurGQomnwsPTd6455nbKxIOJGMkMHOGwxQ9")
-                .build();
-        SocialLogin.addType(SocialType.TWITTER, twitterConfig);
+
     }
 }

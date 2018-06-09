@@ -1,9 +1,6 @@
-package com.hyunjongkim.justtwo.a_item;
+package com.hyunjongkim.justtwo.a_item.res;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @org.parceler.Parcel
 public class ResGetRoomInfoDetailItem {

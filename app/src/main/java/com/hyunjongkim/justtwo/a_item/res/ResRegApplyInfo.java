@@ -1,14 +1,16 @@
-package com.hyunjongkim.justtwo.a_item;
+package com.hyunjongkim.justtwo.a_item.res;
+
 
 import com.google.gson.annotations.SerializedName;
 
 @org.parceler.Parcel
-public class ReqGetRoomDetailInfoItem {
-
+public class ResRegApplyInfo extends ResResultCodeAndMsg{
     @SerializedName("room_id")
-    public int roomId;
+    int roomId;
     @SerializedName("user_id")
-    public int userId;
+    int userId;
+    @SerializedName("message")
+    String message;
 
     public int getRoomId() {
         return roomId;
@@ -25,4 +27,14 @@ public class ReqGetRoomDetailInfoItem {
     public void setUserId(int userId) {
         this.userId = userId;
     }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+
 }
